@@ -78,53 +78,6 @@ void deleteRow(int rowId, map<int, map<string, string> > &db)
 }
 
 /**
- * List all rows in a DB and the corresponding ID
- * This is unordered and messy, but will work with any kind of database
- */
-void listAllRows(map<int, map<string, string> > &db)
-{
-	map<int, map<string, string> >::iterator it;
-	for (it = db.begin(); it != db.end(); it++) {
-		int rowId = it->first;
-		map<string, string> row = it->second;
-
-		cout << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
-		cout << "|  " << rowId << "  |  ";
-		map<string, string>::iterator rowIter;
-		for(rowIter = it->second.begin(); rowIter != it->second.end(); rowIter++) {
-			if (rowIter->second.empty()) {
-				cout << "NULL";
-			} else {
-				cout << rowIter->second;
-			}
-			cout << "  |  ";
-		}
-		cout << endl;
-	}
-	cout << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
-}
-
-/**
- * List all rows in a DB and the corresponding ID
- * This is unordered and messy, but will work with any kind of database
- */
-void listRow(map<string, string> row)
-{
-	cout << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
-	cout << "|  ";
-	map<string, string>::iterator rowIter;
-	for(rowIter = row.begin(); rowIter != row.end(); rowIter++) {
-		if (rowIter->second.empty()) {
-			cout << "NULL";
-		} else {
-			cout << rowIter->second;
-		}
-		cout << "  |  ";
-	}
-	cout << endl << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
-}
-
-/**
  * List all rows of a db
  * This will format everything
  * Got a bit carried away with this one but oh well.
@@ -233,10 +186,18 @@ int main()
 		symptoms
 	);
 
-	// This will list a specific row based on the row ID
-	cout << "Getting a single user by ID:" << endl;
-	listRow(getRow(1, users));
-	cout << endl;
+	insertRow(
+		2,
+		createSymptom(
+			"",
+			"Shitting everywhere, on the floors and on the walls",
+			""
+		),
+		symptoms
+	);
+
+	// This will get a specific row based on the row ID
+	map<string, string> firstUser = getRow(1, users);
 	
 	// This will list all USERS in db
 	cout << " Users Database formatted correctly:" << endl;
