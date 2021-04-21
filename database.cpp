@@ -52,12 +52,20 @@ map<string, string> createSymptom(string lowRisk, string mediumRisk, string high
 	return symptom;
 }
 
-
 /**
- * Insert a row and generate a ID for them
+ * Insert a row
  */
 void insertRow(int rowId, map<string, string> row, map<int, map<string, string> > &db) 
 {
+	db.insert(pair<int, map<string, string> >(rowId, row));
+}
+
+/**
+ * Update a row using rowId
+ */
+void updateRow(int rowId, map<string, string> row, map<int, map<string, string> > &db) 
+{
+	db.erase(rowId);
 	db.insert(pair<int, map<string, string> >(rowId, row));
 }
 
