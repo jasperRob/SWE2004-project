@@ -109,7 +109,7 @@ void listFormattedRows(string columns[], int numColumns, map<int, map<string, st
 		maxIdWidth = max(maxIdWidth, max(2, int(to_string(it->first).length())));
 	}
 	// Calulcate the buffer width
-	int bufferWidth = accumulate(columnWidths.begin(), columnWidths.end(), 0) + (numColumns * 2) + (numColumns+1) + 5;
+	int bufferWidth = accumulate(columnWidths.begin(), columnWidths.end(), 0) + (maxIdWidth) + (numColumns * 2) + (numColumns+1) + 3;
 	string horizontalBuffer(bufferWidth, '-');
 	// Print the header with column tags
 	cout << horizontalBuffer << endl << "| ID" << string(maxIdWidth-2, ' ') << " ";
