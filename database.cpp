@@ -76,7 +76,7 @@ void listRows(map<int, map<string, string> > &db)
 		int rowId = it->first;
 		map<string, string> row = it->second;
 
-		cout << " ------------------------------- " << endl;
+		cout << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
 		cout << "|  " << rowId << "  |  ";
 		map<string, string>::iterator rowIter;
 		for(rowIter = it->second.begin(); rowIter != it->second.end(); rowIter++) {
@@ -89,14 +89,16 @@ void listRows(map<int, map<string, string> > &db)
 		}
 		cout << endl;
 	}
-	cout << "-------------------------------" << endl;
+	cout << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
 }
 
 int main() 
 {
+	// Define a map for each database
 	map<int, map<string, string> > users;
 	map<int, map<string, string> > symptoms;
 	
+	// This will create a new User and insert into the DB
 	insertRow(
 		createUser(
 			"John Smith",
@@ -111,6 +113,7 @@ int main()
 		users
 	);
 
+	// This will create a new Symptom and insert into the DB
 	insertRow(
 		createSymptom(
 			"Fever",
@@ -120,6 +123,7 @@ int main()
 		symptoms
 	);
 
+	// This will list all rows in each DB
 	listRows(users);
 	listRows(symptoms);
 
