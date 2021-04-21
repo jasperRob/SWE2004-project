@@ -134,7 +134,7 @@ void listFormattedRows(string columns[], int numColumns, map<int, map<string, st
 int main() 
 {
 	// Define a map for each database
-	map<int, map<string, string> > users;
+	map<int, map<string, string> > patients;
 	map<int, map<string, string> > symptoms;
 	
 	// This will create a new User and insert into the DB
@@ -150,7 +150,7 @@ int main()
 			"Negative",
 			"Alive"
 		),
-		users
+		patients
 	);
 
 	insertRow(
@@ -165,7 +165,7 @@ int main()
 			"Negative",
 			"Alive"
 		),
-		users
+		patients
 	);
 
 	insertRow(
@@ -180,7 +180,7 @@ int main()
 			"Negative",
 			"Alive"
 		),
-		users
+		patients
 	);
 
 	// This will create a new Symptom and insert into the DB
@@ -205,13 +205,22 @@ int main()
 	);
 
 	// This will get a specific row based on the row ID
-	map<string, string> firstUser = getRow(1, users);
+	map<string, string> firstUser = getRow(1, patients);
 	
 	// This will list all entries in the USERS DB
 	// You must tell it what columns to print, how many columns to print, and from which database
 	cout << " Users Database formatted correctly:" << endl;
-	string userColumns[8] = { "name", "dateOfBirth", "address", "visitedLocation", "dateOfEntry", "lastOverseasTravel", "covidTest", "status" };
-	listFormattedRows(userColumns, 8, users);
+	string patientColumns[8] = { "name", "dateOfBirth", "address", "visitedLocation", "dateOfEntry", "lastOverseasTravel", "covidTest", "status" };
+	listFormattedRows(patientColumns, 8, patients);
+	cout << endl;
+
+	// This is how to update a patient in the DB using ID of 3
+	map<string, string> userToChange = getRow(3, patients);
+	userToChange["status"] = "Dead";
+	updateRow(3, userToChange, patients);
+
+	cout << " Users Database after updateing user:" << endl;
+	listFormattedRows(patientColumns, 8, patients);
 	cout << endl;
 
 	// This will list all entries in the SYMPTOMS DB
@@ -220,6 +229,7 @@ int main()
 	string symptomColumns[3] = { "lowRisk", "mediumRisk", "highRisk" };
 	listFormattedRows(symptomColumns, 3, symptoms);
 	cout << endl;
+
 
 	return 0;
 }
