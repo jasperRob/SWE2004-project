@@ -43,7 +43,7 @@ map<string, string> createSymptom(string lowRisk, string mediumRisk, string high
 /**
  * Insert a row and generate a ID for them
  */
-void insertRow(map<string, string> row, map<int, map<string, string> > &db)
+void insertRow(map<string, string> row, map<int, map<string, string> > &db) 
 {
 	// Find next highest rowId
 	int rowId = 0;
@@ -59,6 +59,14 @@ void insertRow(map<string, string> row, map<int, map<string, string> > &db)
 }
 
 /**
+ * Get a row with a given ID
+ */
+map<string, string> getRow(int rowId, map<int, map<string, string> > &db)
+{
+	return db[rowId];
+}
+
+/**
  * Delete a row with a given ID
  */
 void deleteRow(int rowId, map<int, map<string, string> > &db)
@@ -69,7 +77,7 @@ void deleteRow(int rowId, map<int, map<string, string> > &db)
 /**
  * List all rows in a DB and the corresponding ID
  */
-void listRows(map<int, map<string, string> > &db)
+void listAllRows(map<int, map<string, string> > &db)
 {
 	map<int, map<string, string> >::iterator it;
 	for (it = db.begin(); it != db.end(); it++) {
@@ -90,6 +98,25 @@ void listRows(map<int, map<string, string> > &db)
 		cout << endl;
 	}
 	cout << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
+}
+
+/**
+ * List all rows in a DB and the corresponding ID
+ */
+void listRow(map<string, string> row)
+{
+	cout << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
+	cout << "|  ";
+	map<string, string>::iterator rowIter;
+	for(rowIter = row.begin(); rowIter != row.end(); rowIter++) {
+		if (rowIter->second.empty()) {
+			cout << "NULL";
+		} else {
+			cout << rowIter->second;
+		}
+		cout << "  |  ";
+	}
+	cout << endl << " ------------------------------------------------------------------------------------------------------------------------- " << endl;
 }
 
 int main() 
@@ -124,8 +151,15 @@ int main()
 	);
 
 	// This will list all rows in each DB
-	listRows(users);
-	listRows(symptoms);
+	listAllRows(users);
+	cout << endl;
+
+	listAllRows(symptoms);
+	cout << endl;
+
+	// This will list a specific row based on the row ID
+	listRow(getRow(1, users));
+	cout << endl;
 
 	return 0;
 }
