@@ -12,8 +12,8 @@ using namespace std;
 int main() {
 
 	int userinput, information, userchange;
-	int ID, DOB;
-	string overseas, test, status, usersymptom, address, name, symptom, location;
+	int ID;
+	string overseas, test, status, usersymptom, address, name, symptom, dateentered, location, DOB;
 	//user input variables//
 	
 	//variables to enable the use of the database//
@@ -67,7 +67,7 @@ int main() {
 			cout << endl;
 		}
 		else if (information == 3) {
-			cout << "Enter Date of Birth (ddmmyy): ";
+			cout << "Enter Date of Birth (dd/mm/yyyy): ";
 			cin >> DOB;
 			cout << endl;
 			cout << "Patient Information: ";
@@ -97,6 +97,8 @@ int main() {
 		else if (information == 7) {
 			cout << "Enter location Visited: ";
 			cin >> location;
+			cout << "Enter Date Visited: ";
+			cin >> dateentered;
 			cout << endl;
 			cout << "Patient Information: ";
 			cout << endl;
