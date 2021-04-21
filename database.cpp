@@ -199,18 +199,19 @@ int main()
 	// This will get a specific row based on the row ID
 	map<string, string> firstUser = getRow(1, users);
 	
-	// This will list all USERS in db
+	// This will list all entries in the USERS DB
+	// You must tell it what columns to print, how many columns to print, and from which database
 	cout << " Users Database formatted correctly:" << endl;
 	string userColumns[8] = { "name", "dateOfBirth", "address", "visitedLocation", "dateOfEntry", "lastOverseasTravel", "covidTest", "status" };
 	listFormattedRows(userColumns, 8, users);
 	cout << endl;
 
-	// This will list all USERS in db
+	// This will list all entries in the SYMPTOMS DB
+	// You must tell it what columns to print, how many columns to print, and from which database
 	cout << " Symptom Database formatted correctly:" << endl;
 	string symptomColumns[3] = { "lowRisk", "mediumRisk", "highRisk" };
 	listFormattedRows(symptomColumns, 3, symptoms);
 	cout << endl;
-
 
 	return 0;
 }
