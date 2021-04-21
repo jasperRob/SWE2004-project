@@ -17,25 +17,25 @@ string orNull(string value)
 }
 
 /**
- * Create a user map
+ * Create a patient map
  */
-map<string, string> createUser(string name, string dateOfBirth, 
+map<string, string> createPatient(string name, string dateOfBirth, 
 							string address, string visitedLocation, 
 							string dateOfEntry, string lastOverseasTravel, 
 							string covidTest, string status)
 {
-	map<string, string> user;
+	map<string, string> patient;
 	
-	user["name"] = name;
-	user["dateOfBirth"] = dateOfBirth;
-	user["address"] = address;
-	user["visitedLocation"] = visitedLocation;
-	user["dateOfEntry"] = dateOfEntry;
-	user["lastOverseasTravel"] = lastOverseasTravel;
-	user["covidTest"] = covidTest;
-	user["status"] = status;
+	patient["name"] = name;
+	patient["dateOfBirth"] = dateOfBirth;
+	patient["address"] = address;
+	patient["visitedLocation"] = visitedLocation;
+	patient["dateOfEntry"] = dateOfEntry;
+	patient["lastOverseasTravel"] = lastOverseasTravel;
+	patient["covidTest"] = covidTest;
+	patient["status"] = status;
 
-	return user;
+	return patient;
 }
 
 /**
@@ -137,10 +137,10 @@ int main()
 	map<int, map<string, string> > patients;
 	map<int, map<string, string> > symptoms;
 	
-	// This will create a new User and insert into the DB
+	// This will create a new Patient and insert into the DB
 	insertRow(
-		1, // This is the userID
-		createUser(
+		1, // This is the ID
+		createPatient(
 			"John Smith",
 			"13/02/1994",
 			"13 Some Rd, Suburbia",
@@ -154,8 +154,8 @@ int main()
 	);
 
 	insertRow(
-		2, // This is the userID
-		createUser(
+		2, // This is the ID
+		createPatient(
 			"Peter Flint",
 			"19/01/1984",
 			"25 Another Rd, Somewhere",
@@ -169,8 +169,8 @@ int main()
 	);
 
 	insertRow(
-		3, // This is the userID
-		createUser(
+		3, // This is the ID
+		createPatient(
 			"Seargent Pepper",
 			"19/01/1984",
 			"25 Another Even Longer Rd, Somewhere",
@@ -205,21 +205,21 @@ int main()
 	);
 
 	// This will get a specific row based on the row ID
-	map<string, string> firstUser = getRow(1, patients);
+	map<string, string> firstPatient = getRow(1, patients);
 	
-	// This will list all entries in the USERS DB
+	// This will list all entries in the PATIENTS DB
 	// You must tell it what columns to print, how many columns to print, and from which database
-	cout << " Users Database formatted correctly:" << endl;
+	cout << " Patients Database formatted correctly:" << endl;
 	string patientColumns[8] = { "name", "dateOfBirth", "address", "visitedLocation", "dateOfEntry", "lastOverseasTravel", "covidTest", "status" };
 	listFormattedRows(patientColumns, 8, patients);
 	cout << endl;
 
 	// This is how to update a patient in the DB using ID of 3
-	map<string, string> userToChange = getRow(3, patients);
-	userToChange["status"] = "Dead";
-	updateRow(3, userToChange, patients);
+	map<string, string> patientToChange = getRow(3, patients);
+	patientToChange["status"] = "Dead";
+	updateRow(3, patientToChange, patients);
 
-	cout << " Users Database after updateing user:" << endl;
+	cout << " Patients Database after updating patient:" << endl;
 	listFormattedRows(patientColumns, 8, patients);
 	cout << endl;
 
