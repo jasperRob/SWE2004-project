@@ -102,7 +102,7 @@ void listFormattedRows(string columns[], int numColumns, map<int, map<string, st
 		map<string, string> row = it->second;
 		int c = 0;
 		for (it2 = row.begin(); it2 != row.end(); it2++) {
-			columnWidths[c] = max( max( int(columnWidths[c]), int(it->second[columns[c]].length())), int(columns[c].length()));
+			columnWidths[c] = max( max( int(columnWidths[c]), int(orNull(it->second[columns[c]]).length())), int(columns[c].length()));
 			c++;
 		}
 		// Find Max id width while we are at it
