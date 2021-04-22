@@ -57,6 +57,10 @@ map<string, string> createSymptom(string lowRisk, string mediumRisk, string high
  */
 void insertRow(int rowId, map<string, string> row, map<int, map<string, string> > &db) 
 {
+	// Ensure a row doesn't already exist with that ID
+	if (db.find(rowId) != db.end()) {
+		throw logic_error("A row already exists with that ID");
+	}
 	db.insert(pair<int, map<string, string> >(rowId, row));
 }
 
@@ -65,6 +69,10 @@ void insertRow(int rowId, map<string, string> row, map<int, map<string, string> 
  */
 void updateRow(int rowId, map<string, string> row, map<int, map<string, string> > &db) 
 {
+	// Ensure row is already there, else print error
+	if (db.find(rowId) == db.end()) {
+		throw logic_error("No row exists with that ID");
+	}
 	db.erase(rowId);
 	db.insert(pair<int, map<string, string> >(rowId, row));
 }
@@ -74,6 +82,9 @@ void updateRow(int rowId, map<string, string> row, map<int, map<string, string> 
  */
 map<string, string> getRow(int rowId, map<int, map<string, string> > &db)
 {
+	if (db.find(rowId) == db.end()) {
+		throw logic_error("No row exists with that ID");
+	}
 	return db[rowId];
 }
 
@@ -82,6 +93,10 @@ map<string, string> getRow(int rowId, map<int, map<string, string> > &db)
  */
 void deleteRow(int rowId, map<int, map<string, string> > &db)
 {
+	// Check if that row exists
+	if (db.find(rowId) == db.end()) {
+		throw logic_error("No row exists with that ID");
+	}
 	db.erase(rowId);
 }
 
@@ -206,6 +221,16 @@ int main()
 
 	// This will get a specific row based on the row ID
 	map<string, string> firstPatient = getRow(1, patients);
+	cout << "First Patients name is " << firstPatient["name"] << endl << endl;
+
+	// Notice how you can use a try catch block incase the patient does not exist.
+	// Otherwise the program will fail.
+	try {
+		// Patient with ID of 100 should not exist yet
+		map<string, string> firstPatient = getRow(100, patients);
+	} catch (logic_error){
+		cout << "No row for that ID" << endl << endl;
+	}
 	
 	// This will list all entries in the PATIENTS DB
 	// You must tell it what columns to print, how many columns to print, and from which database
