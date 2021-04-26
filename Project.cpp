@@ -215,7 +215,7 @@ int main() {
 		//return to main menu//
 	}
 
-	} while (userinput != 6)
+	} while (userinput != 6);
 
 	
 
