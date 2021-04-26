@@ -32,20 +32,13 @@ int main() {
 	cout << "Enter '5' to Update Patient Details:" << endl;
 	cout << "Enter '6' to Quit:" << endl;
 	getline(cin, check);
-	if (isdigit(check) == 0) {
-		while (isdigit(check) == 0) {
-			cout << "Invalid input please try again: ";
-			getline(cin, check);
-			cout << endl;
-		}
-	}
 	userinput = stoi(check);
 	cout << endl;
 		
 	//covid recommendation//
 	if (userinput == 1) {
 		cout << "Do You Have Any Symptoms? (yes/no)" << endl;
-		cin >> usersymptom;
+		getline(cin, usersymptom);
 		cout << endl;
 		cout << "Please Enter Your Details." << endl;
 		cout << "What Detail Will You Enter?" << endl;
@@ -56,7 +49,8 @@ int main() {
 		cout << "Enter '5' for Overseas Travel:" << endl;
 		cout << "Enter '6' for Symptoms:" << endl;
 		cout << "Enter '7' for High Risk COVID Area Location:" << endl;
-		cin >> information;
+		getline(cin, check);
+		information = stoi(check);
 		cout << endl;
 		//takes in user input for which information they will enter//
 
@@ -64,7 +58,8 @@ int main() {
 		//and searches through the database to match with an exisitng patient//
 		if (information == 1) {
 			cout << "Enter Patient ID: ";
-			cin >> ID;
+			getline(cin, check);
+			ID = stoi(check);
 			cout << endl;
 			cout << "Patient Information: ";
 			cout << endl;
@@ -73,7 +68,7 @@ int main() {
 			cout << "Enter Name: ";
 			getline(cin, name);
 			cout << endl;
-			cout << "Patient Information: ";
+			cout << "Patient Information: " << name << endl;
 			cout << endl;
 		}
 		else if (information == 3) {
@@ -154,7 +149,8 @@ int main() {
 	else if (userinput == 5) {
 		cout << "Which Patient Details Do You Wish To Update?" << endl;
 		cout << "Please input Patient ID: ";
-		cin >> ID;
+		getline(cin, check);
+		ID = stoi(check);
 		cout << endl;
 		//find patient data//
 		cout << "What Information Do You Wish To Change?" << endl;
@@ -163,7 +159,8 @@ int main() {
 		cout << "Enter '3' for Overseas Travel:" << endl;
 		cout << "Enter '4' for Symptoms:" << endl;
 		cout << "Enter '5' for High Risk COVID Area Location:" << endl;
-		cin >> userchange;
+		getline(cin, check);
+		userchange = stoi(check);
 		cout << endl;
 
 		if (userchange == 1) {
