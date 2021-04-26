@@ -31,13 +31,17 @@ int main() {
 	cout << "Enter '4' to Display the COVID-19 Positive Patient Details:" << endl;
 	cout << "Enter '5' to Update Patient Details:" << endl;
 	cout << "Enter '6' to Quit:" << endl;
-	cin >> userinput;
-	cout << endl;
-	if (!isdigit(userinput)) {
-		cout << "Invalid input please try again: ";
-		cin >> userinput;
-		cout << endl;
+	getline(cin, check);
+	if (isdigit(check) == 0) {
+		while (isdigit(check) == 0) {
+			cout << "Invalid input please try again: ";
+			getline(cin, check);
+			cout << endl;
+		}
 	}
+	userinput = stoi(check);
+	cout << endl;
+		
 	//covid recommendation//
 	if (userinput == 1) {
 		cout << "Do You Have Any Symptoms? (yes/no)" << endl;
