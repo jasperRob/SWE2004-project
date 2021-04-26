@@ -13,7 +13,7 @@ int main() {
 
 	int userinput, information, userchange;
 	int ID;
-	string overseas, test, status, usersymptom, address, name, symptom, location, dateentered, DOB;
+	string overseas, test, status, usersymptom, address, name, symptom, location, dateentered, DOB, check;
 	//user input variables//
 	
 	//variables to enable the use of the database//
