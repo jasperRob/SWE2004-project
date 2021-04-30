@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
 #include <map>
 #include <algorithm>
@@ -16,16 +18,47 @@ string orNull(string value)
 	return value;
 }
 
+vector<map<string, string> > readInFileContents(string columns[], size_t numColumns, string filePath) 
+{
+	cout << "Opening file " << filePath << endl;
+	// Set up a file stream and a vector DB
+	ifstream file(filePath);
+	vector<map<string, string> > db;
+	// Open the file
+	if (file.is_open()) {
+		string line;
+		// Read all lines of the file
+		while (getline(file, line)) {
+			if (!line.empty()) {
+				// Split items by comma and create a map for them
+				map<string, string> row;
+				stringstream ss(line);
+				string item;
+				for (int i = 0; i < numColumns; i++) {
+					getline(ss, item, ',');
+					row[columns[i]] = item;
+				}
+				// Push the map to our vector DB
+				db.push_back(row);
+			}
+		}
+	} else {
+		throw logic_error("Could not open file " + filePath);
+	}
+	return db;
+}
+
 /**
  * Create a patient map
  */
-map<string, string> createPatient(string name, string dateOfBirth, 
+map<string, string> createPatient(string id, string name, string dateOfBirth, 
 							string address, string visitedLocation, 
 							string dateOfEntry, string lastOverseasTravel, 
 							string covidTest, string status)
 {
 	map<string, string> patient;
 	
+	patient["id"] = id;
 	patient["name"] = name;
 	patient["dateOfBirth"] = dateOfBirth;
 	patient["address"] = address;
@@ -55,49 +88,74 @@ map<string, string> createSymptom(string lowRisk, string mediumRisk, string high
 /**
  * Insert a row
  */
-void insertRow(int rowId, map<string, string> row, map<int, map<string, string> > &db) 
+void insertRow(map<string, string> row, vector<map<string, string> > &db) 
 {
-	// Ensure a row doesn't already exist with that ID
-	if (db.find(rowId) != db.end()) {
-		throw logic_error("A row already exists with that ID");
-	}
-	db.insert(pair<int, map<string, string> >(rowId, row));
+	db.push_back(row);
 }
 
 /**
- * Update a row using rowId
+ * Update first row using rowId
  */
-void updateRow(int rowId, map<string, string> row, map<int, map<string, string> > &db) 
+void updateRow(string columnName, string currentValue, string newValue, vector<map<string, string> > &db) 
 {
-	// Ensure row is already there, else print error
-	if (db.find(rowId) == db.end()) {
-		throw logic_error("No row exists with that ID");
+	// Define Iterators
+	vector<map<string, string> >::iterator it;
+	map<string, string>::iterator rowIt;
+	// Iterate through vector DB
+	for (it = db.begin(); it != db.end(); it++) {
+		map<string, string> row = *it;
+		// Find row and update it if value checks out
+		rowIt = row.find(columnName);
+		if (rowIt != row.end() && rowIt->second == currentValue) {
+			rowIt->second = newValue;
+			return;
+		}
 	}
-	db.erase(rowId);
-	db.insert(pair<int, map<string, string> >(rowId, row));
+	// Default to an error if nothing is found
+	throw logic_error("No row exists for that key value pair");
 }
 
 /**
- * Get a row with a given ID
+ * Get first row with a given ID
  */
-map<string, string> getRow(int rowId, map<int, map<string, string> > &db)
+map<string, string> getRow(string columnName, string value, vector<map<string, string> > &db)
 {
-	if (db.find(rowId) == db.end()) {
-		throw logic_error("No row exists with that ID");
+	// Define Iterators
+	vector<map<string, string> >::iterator it;
+	map<string, string>::iterator rowIt;
+	// Iterate through vector DB
+	for (it = db.begin(); it != db.end(); it++) {
+		map<string, string> row = *it;
+		// Find row and return it if value checks out
+		rowIt = row.find(columnName);
+		if (rowIt != row.end() && rowIt->second == value) {
+			return row;
+		}
 	}
-	return db[rowId];
+	// Default to an error if nothing is found
+	throw logic_error("No row exists for that key value pair");
 }
 
 /**
- * Delete a row with a given ID
+ * Delete first row with a given ID
  */
-void deleteRow(int rowId, map<int, map<string, string> > &db)
+void deleteRow(string columnName, string value, vector<map<string, string> > &db)
 {
-	// Check if that row exists
-	if (db.find(rowId) == db.end()) {
-		throw logic_error("No row exists with that ID");
+	// Define Iterators
+	vector<map<string, string> >::iterator it;
+	map<string, string>::iterator rowIt;
+	// Iterate through vector DB
+	for (it = db.begin(); it != db.end(); it++) {
+		map<string, string> row = *it;
+		// Find row and remove it if value checks out
+		rowIt = row.find(columnName);
+		if (rowIt != row.end() && rowIt->second == value) {
+			db.erase(it);
+			return;
+		}
 	}
-	db.erase(rowId);
+	// Default to an error if nothing is found
+	throw logic_error("No row exists for that key value pair");
 }
 
 /**
@@ -105,38 +163,31 @@ void deleteRow(int rowId, map<int, map<string, string> > &db)
  * This will format everything
  * Got a bit carried away with this one but oh well.
  */
-void listFormattedRows(string columns[], int numColumns, map<int, map<string, string> > &db)
+void listFormattedRows(string columns[], size_t numColumns, vector<map<string, string> > &db)
 {
 	// Define iterators and width vector
-	map<int, map<string, string> >::iterator it;
-	map<string, string>::iterator it2;
+	vector<map<string, string> >::iterator it;
 	vector<int> columnWidths(numColumns, 0);
 	int maxIdWidth = 0;
 	// Calculate the column widths
 	for (it = db.begin(); it != db.end(); it++) {
-		map<string, string> row = it->second;
-		int c = 0;
-		for (it2 = row.begin(); it2 != row.end(); it2++) {
-			columnWidths[c] = max( max( int(columnWidths[c]), int(orNull(it->second[columns[c]]).length())), int(columns[c].length()));
-			c++;
+		map<string, string> row = *it;
+		for (int c = 0; c < numColumns; c++) {
+			columnWidths[c] = max( max( int(columnWidths[c]), int(orNull(row[columns[c]]).length())), int(columns[c].length()));
 		}
-		// Find Max id width while we are at it
-		maxIdWidth = max(maxIdWidth, max(2, int(to_string(it->first).length())));
 	}
 	// Calulcate the buffer width
-	int bufferWidth = accumulate(columnWidths.begin(), columnWidths.end(), 0) + (maxIdWidth) + (numColumns * 2) + (numColumns+1) + 3;
+	int bufferWidth = accumulate(columnWidths.begin(), columnWidths.end(), 0) + (numColumns * 3) + 1;
 	string horizontalBuffer(bufferWidth, '-');
 	// Print the header with column tags
-	cout << horizontalBuffer << endl << "| ID" << string(maxIdWidth-2, ' ') << " ";
+	cout << horizontalBuffer << endl;
 	for (int i = 0; i < numColumns; i++) {
 		cout << "| " << columns[i] << string(columnWidths[i]-columns[i].length(), ' ') << " ";
 	}
 	cout << "|" << endl << horizontalBuffer << endl;
 	// Begin printing each row in the database
 	for (it = db.begin(); it != db.end(); it++) {
-		int rowId = it->first;
-		cout << "| " << rowId << string(maxIdWidth-to_string(rowId).length(), ' ') << " ";
-		map<string, string> row = it->second;
+		map<string, string> row = *it;
 		for (int i = 0; i < numColumns; i++) {
 			string value = orNull(row[columns[i]]);
 			cout << "| " << value << string(columnWidths[i]-value.length(), ' ') << " ";
@@ -148,113 +199,55 @@ void listFormattedRows(string columns[], int numColumns, map<int, map<string, st
 
 int main() 
 {
-	// Define a map for each database
-	map<int, map<string, string> > patients;
-	map<int, map<string, string> > symptoms;
+	// Define a vector of maps for each database
+	vector<map<string, string> > patients;
+	vector<map<string, string> > symptoms;
 	
-	// This will create a new Patient and insert into the DB
-	insertRow(
-		1, // This is the ID
-		createPatient(
-			"John Smith",
-			"13/02/1994",
-			"13 Some Rd, Suburbia",
-			"supermarket",
-			"21/4/2021",
-			"Yes",
-			"Negative",
-			"Alive"
-		),
-		patients
-	);
+	// Define an array of columns related to each DB
+	string patientColumns[9] = { "id", "name", "dateOfBirth", "address", "visitedLocation", "dateOfEntry", "lastOverseasTravel", "covidTest", "status" };
+	string symptomColumns[3] = { "lowRisk", "mediumRisk", "highRisk" };
 
-	insertRow(
-		2, // This is the ID
-		createPatient(
-			"Peter Flint",
-			"19/01/1984",
-			"25 Another Rd, Somewhere",
-			"hospital",
-			"21/4/2021",
-			"Yes",
-			"Negative",
-			"Alive"
-		),
-		patients
-	);
+	// It is neccessary to get the size of these column arrays for use in functions
+	size_t patientNumCols = sizeof(patientColumns)/sizeof(patientColumns[0]);
+	size_t symptomNumCols = sizeof(symptomColumns)/sizeof(symptomColumns[0]);
 
-	insertRow(
-		3, // This is the ID
-		createPatient(
-			"Seargent Pepper",
-			"19/01/1984",
-			"25 Another Even Longer Rd, Somewhere",
-			"hospital",
-			"21/4/2021",
-			"Yes",
-			"Negative",
-			"Alive"
-		),
-		patients
-	);
+	// Read file contents into our DBs
+	patients = readInFileContents(patientColumns, patientNumCols, "patients.txt");
+	symptoms = readInFileContents(symptomColumns, symptomNumCols, "symptoms.txt");
 
-	// This will create a new Symptom and insert into the DB
-	insertRow(
-		1,
-		createSymptom(
-			"Fever",
-			"",
-			""
-		),
-		symptoms
-	);
+	cout << endl;
 
-	insertRow(
-		2,
-		createSymptom(
-			"",
-			"Shitting everywhere, on the floors and on the walls",
-			""
-		),
-		symptoms
-	);
+	// List The Patients
+	cout << " Patients Database formatted correctly:" << endl;
+	listFormattedRows(patientColumns, patientNumCols, patients);
+	cout << endl;
 
-	// This will get a specific row based on the row ID
-	map<string, string> firstPatient = getRow(1, patients);
-	cout << "First Patients name is " << firstPatient["name"] << endl << endl;
+	// List The Symptoms
+	cout << " Symptom Database formatted correctly:" << endl;
+	listFormattedRows(symptomColumns, symptomNumCols, symptoms);
+	cout << endl;
 
-	// Notice how you can use a try catch block incase the patient does not exist.
-	// Otherwise the program will fail.
+	// Get Patient with ID of 1
+	// This is how we catch potential errors
 	try {
-		// Patient with ID of 100 should not exist yet
-		map<string, string> firstPatient = getRow(100, patients);
+		map<string, string> user = getRow("id", "1", patients);
+		cout << "FIRST USER = " << user["name"] << endl << endl;
 	} catch (logic_error){
 		cout << "No row for that ID" << endl << endl;
 	}
-	
-	// This will list all entries in the PATIENTS DB
-	// You must tell it what columns to print, how many columns to print, and from which database
+	// Deleting a row with ID of 1
+	deleteRow("id", "1", patients);
+
+	// Creating a patient and inserting
+	insertRow(
+		createPatient(
+			"4", "James Parker", "17/2/1965", "143 band street OtherTown", "hospital", "2/2/2021", "No", "Negative",  "Alive"
+		),
+		patients
+	);
+
 	cout << " Patients Database formatted correctly:" << endl;
-	string patientColumns[8] = { "name", "dateOfBirth", "address", "visitedLocation", "dateOfEntry", "lastOverseasTravel", "covidTest", "status" };
-	listFormattedRows(patientColumns, 8, patients);
-	cout << endl;
-
-	// This is how to update a patient in the DB using ID of 3
-	map<string, string> patientToChange = getRow(3, patients);
-	patientToChange["status"] = "Dead";
-	updateRow(3, patientToChange, patients);
-
-	cout << " Patients Database after updating patient:" << endl;
-	listFormattedRows(patientColumns, 8, patients);
-	cout << endl;
-
-	// This will list all entries in the SYMPTOMS DB
-	// You must tell it what columns to print, how many columns to print, and from which database
-	cout << " Symptom Database formatted correctly:" << endl;
-	string symptomColumns[3] = { "lowRisk", "mediumRisk", "highRisk" };
-	listFormattedRows(symptomColumns, 3, symptoms);
-	cout << endl;
-
+	listFormattedRows(patientColumns, patientNumCols, patients);
 
 	return 0;
 }
