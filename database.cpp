@@ -18,6 +18,9 @@ string orNull(string value)
 	return value;
 }
 
+/**
+ * Read in the contents of a file and return it as a vector of maps
+ */
 vector<map<string, string> > readInFileContents(string columns[], size_t numColumns, string filePath) 
 {
 	cout << "Opening file " << filePath << endl;
@@ -42,6 +45,7 @@ vector<map<string, string> > readInFileContents(string columns[], size_t numColu
 				db.push_back(row);
 			}
 		}
+		file.close();
 	} else {
 		throw logic_error("Could not open file " + filePath);
 	}
@@ -49,12 +53,35 @@ vector<map<string, string> > readInFileContents(string columns[], size_t numColu
 }
 
 /**
+ * Overwrite a file with the current DB contents.
+ */
+void writeDatabaseToFile(vector<map<string, string> > &db, string columns[], size_t numColumns, string filePath)
+{
+	ofstream file(filePath, ios::trunc);
+	if (file.is_open()) {
+		vector<map<string, string> >::iterator rowIt;
+		for (rowIt = db.begin(); rowIt != db.end(); rowIt++) {
+			map<string, string> row = *rowIt;
+			// Write comma seperated values to line
+			file << row[columns[0]];
+			for (int i = 1; i < numColumns; i++) {
+				file << "," << row[columns[i]];
+			}
+			file << endl;
+		}
+		file.close();
+	} else {
+		throw logic_error("Could not open file " + filePath);
+	}
+}
+
+/**
  * Create a patient map
  */
 map<string, string> createPatient(string id, string name, string dateOfBirth, 
-							string address, string visitedLocation, 
-							string dateOfEntry, string lastOverseasTravel, 
-							string covidTest, string status)
+						string address, string visitedLocation, 
+						string dateOfEntry, string lastOverseasTravel, 
+						string covidTest, string status)
 {
 	map<string, string> patient;
 	
@@ -134,6 +161,31 @@ map<string, string> getRow(string columnName, string value, vector<map<string, s
 	}
 	// Default to an error if nothing is found
 	throw logic_error("No row exists for that key value pair");
+}
+
+/*
+ * Get every value associeted with a column
+ */
+vector<string> getAllValuesForColumn(string columnName, vector<map<string, string> > &db)
+{
+	// Define Iterators
+	vector<string> values;
+	vector<map<string, string> >::iterator it;
+	map<string, string>::iterator rowIt;
+	// Iterate through vector DB
+	for (it = db.begin(); it != db.end(); it++) {
+		map<string, string> row = *it;
+		// Find row and return it if value checks out
+		rowIt = row.find(columnName);
+		if (rowIt != row.end()) {
+			values.push_back(rowIt->second);
+		}
+	}
+	if (values.size() > 0) {
+		return values;
+	}
+	// Default to an error if nothing is found
+	throw logic_error("No values found for that column");
 }
 
 /**
@@ -230,13 +282,13 @@ int main()
 	// Get Patient with ID of 1
 	// This is how we catch potential errors
 	try {
-		map<string, string> user = getRow("id", "1", patients);
+		map<string, string> user = getRow("id", "4", patients);
 		cout << "FIRST USER = " << user["name"] << endl << endl;
+		// Deleting a row with ID of 1
+		deleteRow("id", "4", patients);
 	} catch (logic_error){
 		cout << "No row for that ID" << endl << endl;
 	}
-	// Deleting a row with ID of 1
-	deleteRow("id", "1", patients);
 
 	// Creating a patient and inserting
 	insertRow(
@@ -248,6 +300,20 @@ int main()
 
 	cout << " Patients Database formatted correctly:" << endl;
 	listFormattedRows(patientColumns, patientNumCols, patients);
+
+	// Make sure this is run every time something is updated
+	// It will overwite the file with current DB contents
+	writeDatabaseToFile(patients, patientColumns, patientNumCols, "patients.txt");
+
+	try {
+		vector<string> locations = getAllValuesForColumn("visitedLocation", patients);
+		cout << endl << "Locations: " << endl;
+		cout << locations[0] << endl;
+		cout << locations[1] << endl;
+		cout << locations[2] << endl;
+	} catch (logic_error) {
+		cout << "nope, couldnt get the locations..." << endl;
+	}
 
 	return 0;
 }
