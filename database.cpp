@@ -122,7 +122,7 @@ void insertRow(map<string, string> row, vector<map<string, string> > &db)
 }
 
 /**
- * Update first row using rowId
+ * Update first row using key-value pair
  */
 void updateRow(string columnName, string currentValue, string newValue, vector<map<string, string> > &db) 
 {
@@ -144,7 +144,7 @@ void updateRow(string columnName, string currentValue, string newValue, vector<m
 }
 
 /**
- * Get first row with a given ID
+ * Get first row with a given key-value pair
  */
 map<string, string> getRow(string columnName, string value, vector<map<string, string> > &db)
 {
@@ -308,7 +308,7 @@ int main()
 
 	try {
 		vector<string> locations = getAllValuesForColumn("visitedLocation", patients);
-		cout << endl << "Locations: " << endl;
+		cout << endl << "First three locations are: " << endl;
 		cout << locations[0] << endl;
 		cout << locations[1] << endl;
 		cout << locations[2] << endl;
