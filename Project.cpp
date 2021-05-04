@@ -5,7 +5,13 @@
 // Samuel Nothnagel  #100601319 //
 
 #include <iostream>
-#include<string>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <numeric>
 using namespace std;
 // #include statement list to include required C++ library functions //
 
