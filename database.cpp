@@ -40,6 +40,12 @@ vector<map<string, string> > readInFileContents(string columns[], size_t numColu
 				string item;
 				for (int i = 0; i < numColumns; i++) {
 					getline(ss, item, ',');
+					while (item.back() == '\\') {
+						string append;
+						getline(ss, append, ',');
+						item = item.substr(0, item.length()-1);
+						item = item + "," + append;
+					}
 					row[columns[i]] = item;
 				}
 				// Push the map to our vector DB
@@ -66,7 +72,15 @@ void writeDatabaseToFile(vector<map<string, string> > &db, string columns[], siz
 			// Write comma seperated values to line
 			file << row[columns[0]];
 			for (int i = 1; i < numColumns; i++) {
-				file << "," << row[columns[i]];
+				stringstream ss(row[columns[i]]);
+				string item;
+				getline(ss, item, ',');
+				while (ss.rdbuf()->in_avail()) {
+					string append;
+					getline(ss, append, ',');
+					item = item + "\\," + append;
+				}
+				file << "," << item;
 			}
 			file << endl;
 		}
@@ -294,7 +308,7 @@ int main()
 	// Creating a patient and inserting
 	insertRow(
 		createPatient(
-			"4", "James Parker", "17/2/1965", "143 band street OtherTown", "hospital", "2/2/2021", "No", "Negative",  "Alive"
+			"4", "James Parker", "17/2/1965", "143 band street, OtherTown", "hospital", "2/2/2021", "No", "Negative",  "Alive"
 		),
 		patients
 	);
