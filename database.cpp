@@ -277,8 +277,20 @@ int main()
 		cout << "4 - Update COVID Patient Details" << endl;
 		cout << "5 - Display the COVID Positive Patient Detail" << endl;
 		cout << "6 - Quit" << endl;
-		int input = stoi(requestValue("Your Selection: "));
-
+		// Rquest input and keep trying if it is invalid
+		while (true) {
+			try {
+				input = stoi(requestValue("Your Selection: "));
+			} catch (exception) {
+				// This means user probably put a char or a string
+				input = 0;
+			}
+			if (input > 0 && input < 7) {
+				// This means input is valid so we break the while loop
+				break;
+			}
+			cout << "Sorry, that input is invalid, Try Again!" << endl;
+		}
 		if (input == 1) { 
 			// Ask for the users details
 			map<string, string> user;
@@ -338,7 +350,7 @@ int main()
 				}
 				cout << endl;
 			}
-		};
+		}
 	} while (input != 6);
 
 	cout << "Goodbye!" << endl;
