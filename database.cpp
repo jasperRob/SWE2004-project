@@ -91,43 +91,6 @@ void writeDatabaseToFile(vector<map<string, string> > &db, string columns[], siz
 }
 
 /**
- * Create a patient map
- */
-map<string, string> createPatient(string id, string name, string dateOfBirth, 
-						string address, string visitedLocation, 
-						string dateOfEntry, string lastOverseasTravel, 
-						string covidTest, string status)
-{
-	map<string, string> patient;
-	
-	patient["id"] = id;
-	patient["name"] = name;
-	patient["dateOfBirth"] = dateOfBirth;
-	patient["address"] = address;
-	patient["visitedLocation"] = visitedLocation;
-	patient["dateOfEntry"] = dateOfEntry;
-	patient["lastOverseasTravel"] = lastOverseasTravel;
-	patient["covidTest"] = covidTest;
-	patient["status"] = status;
-
-	return patient;
-}
-
-/**
- * Create a symptom map
- */
-map<string, string> createSymptom(string lowRisk, string mediumRisk, string highRisk)
-{
-	map<string, string> symptom;
-	
-	symptom["lowRisk"] = lowRisk;
-	symptom["mediumRisk"] = mediumRisk;
-	symptom["highRisk"] = highRisk;
-
-	return symptom;
-}
-
-/**
  * Insert a row
  */
 void insertRow(map<string, string> row, vector<map<string, string> > &db) 
@@ -138,18 +101,19 @@ void insertRow(map<string, string> row, vector<map<string, string> > &db)
 /**
  * Update first row using key-value pair
  */
-void updateRow(string columnName, string currentValue, string newValue, vector<map<string, string> > &db) 
+void updateRow(string idColumn, string idValue, map<string, string> row, vector<map<string, string> > &db) 
 {
 	// Define Iterators
 	vector<map<string, string> >::iterator it;
 	map<string, string>::iterator rowIt;
 	// Iterate through vector DB
 	for (it = db.begin(); it != db.end(); it++) {
-		map<string, string> row = *it;
+		map<string, string> r = *it;
 		// Find row and update it if value checks out
-		rowIt = row.find(columnName);
-		if (rowIt != row.end() && rowIt->second == currentValue) {
-			rowIt->second = newValue;
+		rowIt = r.find(idColumn);
+		if (rowIt != r.end() && rowIt->second == idValue) {
+			cout << rowIt->first << " = " << rowIt->second << endl;
+			*it = row;
 			return;
 		}
 	}
@@ -264,71 +228,111 @@ void listFormattedRows(string columns[], size_t numColumns, vector<map<string, s
 	cout << horizontalBuffer << endl;
 }
 
+string requestValue(string key)
+{
+	cout << key << ": ";
+	string input;
+	getline(cin, input);
+	return input;
+}
+
+int showMenu()
+{
+	cout << "Please select one of the following:" << endl;
+	cout << "1 - Enter your detail for COVID-Test Recommendation" << endl;
+	cout << "2 - Submit Your Covid test status & Update the Location database" << endl;
+	cout << "3 - Display the Updated Location (High Risk for COVID) " << endl;
+	cout << "4 - Update COVID Patient Details  " << endl;
+	cout << "5 - Display the COVID Positive Patient Detail " << endl;
+	cout << "6 - Quit" << endl;
+	int input = stoi(requestValue("Your Selection"));
+	return input;
+}
+
 int main() 
 {
 	// Define a vector of maps for each database
 	vector<map<string, string> > patients;
 	vector<map<string, string> > symptoms;
+	vector<map<string, string> > locations;
 	
 	// Define an array of columns related to each DB
 	string patientColumns[9] = { "id", "name", "dateOfBirth", "address", "visitedLocation", "dateOfEntry", "lastOverseasTravel", "covidTest", "status" };
 	string symptomColumns[3] = { "lowRisk", "mediumRisk", "highRisk" };
+	string locationsColumns[3] = { "name" };
 
 	// It is neccessary to get the size of these column arrays for use in functions
 	size_t patientNumCols = sizeof(patientColumns)/sizeof(patientColumns[0]);
 	size_t symptomNumCols = sizeof(symptomColumns)/sizeof(symptomColumns[0]);
+	size_t locationsNumCols = sizeof(locationsColumns)/sizeof(locationsColumns[0]);
 
 	// Read file contents into our DBs
 	patients = readInFileContents(patientColumns, patientNumCols, "patients.txt");
 	symptoms = readInFileContents(symptomColumns, symptomNumCols, "symptoms.txt");
+	locations = readInFileContents(locationsColumns, locationsNumCols, "locations.txt");
 
-	cout << endl;
+	int input;
+	do {
+		// List The Patients
+		cout << " Patients Database formatted correctly:" << endl;
+		listFormattedRows(patientColumns, patientNumCols, patients);
+		cout << endl;
 
-	// List The Patients
-	cout << " Patients Database formatted correctly:" << endl;
-	listFormattedRows(patientColumns, patientNumCols, patients);
-	cout << endl;
+		input = showMenu();
+		if (input == 1) { 
+			// Ask for the users details
+			map<string, string> user;
+			user["id"] = requestValue("ID");
+			user["name"] = requestValue("Name");
+			user["dateOfBirth"] = requestValue("DateOfBirth");
+			user["address"] = requestValue("Address");
+			user["visitedLocation"] = requestValue("VisitedLocation");
+			user["dateOfEntry"] = requestValue("DateOfEntry");
+			user["lastOverseasTravel"] = requestValue("LastOverseasTravel");
+			user["covidTest"] = requestValue("CovidTest");
+			user["status"] = requestValue("Status");
+			cout << endl;
+			// Insert into the DB and write to file
+			insertRow(user, patients);
+			writeDatabaseToFile(patients, patientColumns, patientNumCols, "patients.txt");
+		}
+		if (input == 2) {
+			string id = requestValue("ID");
+			string covidTest = requestValue("Test Status");
+			if (covidTest == "Positive") {
+				map<string, string> user;
+				try {
+					// Get User from DB using the id and set new value
+					user = getRow("id", id, patients);
+					user["covidTest"] = covidTest;
+					// Update their row in the DB
+					updateRow("id", id, user, patients);
+					// Write contents to file
+					writeDatabaseToFile(patients, patientColumns, patientNumCols, "patients.txt");
+				} catch (logic_error) {
+					cout << "no good" << endl;
+				}
+				try {
+					// Check if location exists and fail if not
+					map<string, string> userWithLoc = getRow("name", user["visitedLocation"], locations);
+					cout << user["visitedLocation"] << " already in locations database" << endl;
+				} catch (logic_error) {
+					cout << "Adding " << user["visitedLocation"] << " to locations database" << endl;
+					// Create new location
+					map<string, string> newLocation;
+					string visLoc = user["visitedLocation"];
+					newLocation["name"] = visLoc;
+					// Add new location to the DB
+					insertRow(newLocation, locations);
+					// Write this to the file
+					writeDatabaseToFile(locations, locationsColumns, locationsNumCols, "locations.txt");
+				}
+				cout << endl;
+			}
+		};
+	} while (input != 6);
 
-	// List The Symptoms
-	cout << " Symptom Database formatted correctly:" << endl;
-	listFormattedRows(symptomColumns, symptomNumCols, symptoms);
-	cout << endl;
-
-	// Get Patient with ID of 1
-	// This is how we catch potential errors
-	try {
-		map<string, string> user = getRow("id", "4", patients);
-		cout << "FIRST USER = " << user["name"] << endl << endl;
-		// Deleting a row with ID of 1
-		deleteRow("id", "4", patients);
-	} catch (logic_error){
-		cout << "No row for that ID" << endl << endl;
-	}
-
-	// Creating a patient and inserting
-	insertRow(
-		createPatient(
-			"4", "James Parker", "17/2/1965", "143 band street, OtherTown", "hospital", "2/2/2021", "No", "Negative",  "Alive"
-		),
-		patients
-	);
-
-	cout << " Patients Database formatted correctly:" << endl;
-	listFormattedRows(patientColumns, patientNumCols, patients);
-
-	// Make sure this is run every time something is updated
-	// It will overwite the file with current DB contents
-	writeDatabaseToFile(patients, patientColumns, patientNumCols, "patients.txt");
-
-	try {
-		vector<string> locations = getAllValuesForColumn("visitedLocation", patients);
-		cout << endl << "First three locations are: " << endl;
-		cout << locations[0] << endl;
-		cout << locations[1] << endl;
-		cout << locations[2] << endl;
-	} catch (logic_error) {
-		cout << "nope, couldnt get the locations..." << endl;
-	}
+	cout << "Goodbye!" << endl;
 
 	return 0;
 }
