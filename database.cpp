@@ -228,24 +228,15 @@ void listFormattedRows(string columns[], size_t numColumns, vector<map<string, s
 	cout << horizontalBuffer << endl;
 }
 
-string requestValue(string key)
+/*
+ * Prompt with a string, and return user input.
+ * Note that prompt can be an empty string
+ */
+string requestValue(string prompt)
 {
-	cout << key;
+	cout << prompt;
 	string input;
 	getline(cin, input);
-	return input;
-}
-
-int showMenu()
-{
-	cout << "Please select one of the following:" << endl;
-	cout << "1 - Enter your detail for COVID-Test Recommendation" << endl;
-	cout << "2 - Submit Your Covid test status & Update the Location database" << endl;
-	cout << "3 - Display the Updated Location (High Risk for COVID) " << endl;
-	cout << "4 - Update COVID Patient Details  " << endl;
-	cout << "5 - Display the COVID Positive Patient Detail " << endl;
-	cout << "6 - Quit" << endl;
-	int input = stoi(requestValue("Your Selection: "));
 	return input;
 }
 
@@ -267,20 +258,27 @@ int main()
 	size_t locationsNumCols = sizeof(locationsColumns)/sizeof(locationsColumns[0]);
 
 	// Read file contents into our DBs
+	// Notice how the same function can be used across all DB structures
 	patients = readInFileContents(patientColumns, patientNumCols, "patients.txt");
 	symptoms = readInFileContents(symptomColumns, symptomNumCols, "symptoms.txt");
 	locations = readInFileContents(locationsColumns, locationsNumCols, "locations.txt");
 
 	int input;
 	do {
-		// List The Patients
-		/* cout << " Patients Database formatted correctly:" << endl; */
+		// List all DB Items
 		listFormattedRows(patientColumns, patientNumCols, patients);
 		listFormattedRows(locationsColumns, locationsNumCols, locations);
 		listFormattedRows(symptomColumns, symptomNumCols, symptoms);
-		cout << endl;
 
-		input = showMenu();
+		cout << endl << "Please select one of the following:" << endl;
+		cout << "1 - Enter your detail for COVID-Test Recommendation" << endl;
+		cout << "2 - Submit Your Covid test status & Update the Location database" << endl;
+		cout << "3 - Display the Updated Location (High Risk for COVID)" << endl;
+		cout << "4 - Update COVID Patient Details" << endl;
+		cout << "5 - Display the COVID Positive Patient Detail" << endl;
+		cout << "6 - Quit" << endl;
+		int input = stoi(requestValue("Your Selection: "));
+
 		if (input == 1) { 
 			// Ask for the users details
 			map<string, string> user;
@@ -299,8 +297,8 @@ int main()
 			writeDatabaseToFile(patients, patientColumns, patientNumCols, "patients.txt");
 		}
 		if (input == 2) {
+			// Ask for thair ID and COVID Test status
 			string id = requestValue("ID: ");
-
 			string covidTest;
 			while (true) {
 				covidTest = requestValue("Test Status (Positive|Negative): ");
