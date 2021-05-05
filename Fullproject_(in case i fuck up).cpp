@@ -319,17 +319,17 @@ int main() {
 
 	// Make sure this is run every time something is updated
 	// It will overwite the file with current DB contents
-	writeDatabaseToFile(patients, patientColumns, patientNumCols, "patients.txt");
+				//writeDatabaseToFile(patients, patientColumns, patientNumCols, "patients.txt");
 
-	try {
-		vector<string> locations = getAllValuesForColumn("visitedLocation", patients);
-		cout << endl << "First three locations are: " << endl;
-		cout << locations[0] << endl;
-		cout << locations[1] << endl;
-		cout << locations[2] << endl;
-	} catch (logic_error) {
-		cout << "nope, couldnt get the locations..." << endl;
-	}
+				//try {
+					//vector<string> locations = getAllValuesForColumn("visitedLocation", patients);
+					//cout << endl << "First three locations are: " << endl;
+					//cout << locations[0] << endl;
+					//cout << locations[1] << endl;
+					//cout << locations[2] << endl;
+				//} catch (logic_error) {
+					//cout << "nope, couldnt get the locations..." << endl;
+				//}
 
 	int userinput, information, userchange;
 	int ID;
