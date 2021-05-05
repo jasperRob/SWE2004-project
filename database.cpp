@@ -230,7 +230,7 @@ void listFormattedRows(string columns[], size_t numColumns, vector<map<string, s
 
 string requestValue(string key)
 {
-	cout << key << ": ";
+	cout << key;
 	string input;
 	getline(cin, input);
 	return input;
@@ -245,7 +245,7 @@ int showMenu()
 	cout << "4 - Update COVID Patient Details  " << endl;
 	cout << "5 - Display the COVID Positive Patient Detail " << endl;
 	cout << "6 - Quit" << endl;
-	int input = stoi(requestValue("Your Selection"));
+	int input = stoi(requestValue("Your Selection: "));
 	return input;
 }
 
@@ -259,7 +259,7 @@ int main()
 	// Define an array of columns related to each DB
 	string patientColumns[9] = { "id", "name", "dateOfBirth", "address", "visitedLocation", "dateOfEntry", "lastOverseasTravel", "covidTest", "status" };
 	string symptomColumns[3] = { "lowRisk", "mediumRisk", "highRisk" };
-	string locationsColumns[3] = { "name" };
+	string locationsColumns[1] = { "name" };
 
 	// It is neccessary to get the size of these column arrays for use in functions
 	size_t patientNumCols = sizeof(patientColumns)/sizeof(patientColumns[0]);
@@ -274,31 +274,42 @@ int main()
 	int input;
 	do {
 		// List The Patients
-		cout << " Patients Database formatted correctly:" << endl;
+		/* cout << " Patients Database formatted correctly:" << endl; */
 		listFormattedRows(patientColumns, patientNumCols, patients);
+		listFormattedRows(locationsColumns, locationsNumCols, locations);
+		listFormattedRows(symptomColumns, symptomNumCols, symptoms);
 		cout << endl;
 
 		input = showMenu();
 		if (input == 1) { 
 			// Ask for the users details
 			map<string, string> user;
-			user["id"] = requestValue("ID");
-			user["name"] = requestValue("Name");
-			user["dateOfBirth"] = requestValue("DateOfBirth");
-			user["address"] = requestValue("Address");
-			user["visitedLocation"] = requestValue("VisitedLocation");
-			user["dateOfEntry"] = requestValue("DateOfEntry");
-			user["lastOverseasTravel"] = requestValue("LastOverseasTravel");
-			user["covidTest"] = requestValue("CovidTest");
-			user["status"] = requestValue("Status");
+			user["id"] = requestValue("ID: ");
+			user["name"] = requestValue("Name: ");
+			user["dateOfBirth"] = requestValue("DateOfBirth (dd/mm/yyy): ");
+			user["address"] = requestValue("Address: ");
+			user["visitedLocation"] = requestValue("VisitedLocation: ");
+			user["dateOfEntry"] = requestValue("DateOfEntry (dd/mm/yyy): ");
+			user["lastOverseasTravel"] = requestValue("LastOverseasTravel (Yes|No): ");
+			user["covidTest"] = requestValue("CovidTest (Positive|Negative): ");
+			user["status"] = requestValue("Status (Alive|Dead): ");
 			cout << endl;
 			// Insert into the DB and write to file
 			insertRow(user, patients);
 			writeDatabaseToFile(patients, patientColumns, patientNumCols, "patients.txt");
 		}
 		if (input == 2) {
-			string id = requestValue("ID");
-			string covidTest = requestValue("Test Status");
+			string id = requestValue("ID: ");
+
+			string covidTest;
+			while (true) {
+				covidTest = requestValue("Test Status (Positive|Negative): ");
+				if (covidTest == "Positive" || covidTest == "Negative") {
+					break;
+				}
+				cout << "Sorry, that is not a valid input. Items are case sensitive." << endl;
+			}
+
 			if (covidTest == "Positive") {
 				map<string, string> user;
 				try {
