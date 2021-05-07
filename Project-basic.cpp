@@ -35,15 +35,16 @@ int main() {
 		cout << "Enter '4' to Display the COVID-19 Positive Patient Details:" << endl;
 		cout << "Enter '5' to Update Patient Details:" << endl;
 		cout << "Enter '6' to Quit:" << endl;
-		getline(cin, check);
-		if ((userinput = stoi(check)) == false) {
-			while ((userinput = stoi(check)) == false) {
-				cout << "Error please try again: ";
+		while (true) {
+			try {
 				getline(cin, check);
-				cout << endl;
+				userinput = stoi(check);
+				break;
+			} catch (exception) {
+				cout << "Sorry, that input is invalid, Try Again!" << endl;
+				continue;
 			}
 		}
-		userinput = stoi(check);
 		cout << endl;
 
 		//covid recommendation//
