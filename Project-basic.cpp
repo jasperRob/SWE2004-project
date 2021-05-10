@@ -223,27 +223,42 @@ int main() {
 
 		// display high risk locations // 
 		else if (userinput == 3) {
-		cout << "The High Risk Locations are:" << endl;
-		cout << endl;
-		cout << endl;
-
-		inFile.open(locationlist);
-		while (getline(inFile, line)) {
-			cout << line << endl;
+			cout << "The High Risk Locations are:" << endl;
 			cout << endl;
-		}
-		inFile.close();
-		cout << endl;
-		cout << "End of High Risk Location List" << endl;
-		cout << endl;
-		cout << endl;
-		//opens respective file and reads contents//
+			cout << endl;
 
-		//return to main menu//
+			inFile.open(locationlist);
+			while (getline(inFile, line)) {
+				cout << line << endl;
+				cout << endl;
+			}
+			inFile.close();
+			cout << endl;
+			cout << "End of High Risk Location List" << endl;
+			cout << endl;
+			cout << endl;
+			//opens respective file and reads contents//
+
+			//return to main menu//
 		}
 
 		// update patient details //
 		else if (userinput == 4) {
+			cout << "Would You Like to Update an Existing Patient or Add a New Patient?" << endl;
+			cout << "Enter 1 For Existing Patient and 2 For New Patient" << endl;
+			getline(cin, check);
+			if(check = 1){
+				
+			}
+			else if(check = 2){
+				
+			}
+			else {
+				while((check != 1) || (check != 2)){
+					cout << "Invalid input please try again: " ;
+					getline(cin, check);
+				}
+			}
 			
 		}
 
