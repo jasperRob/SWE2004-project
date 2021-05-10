@@ -244,62 +244,7 @@ int main() {
 
 		// update patient details //
 		else if (userinput == 4) {
-			/*
-			cout << "Which Patient Details Do You Wish To Update?" << endl;
-			cout << "Please input Patient ID: ";
-			getline(cin, check);
-			ID = stoi(check);
-			cout << endl;
-			//find patient data//
-			oFile.open(patient, ios::app);
 			
-			cout << "Enter New Name: ";
-			getline(cin, name);
-			oFile << name << ' ';
-			cout << endl;
-
-			cout << "Enter date of birth(dd/mm/yyyy): ";
-			getline(cin, name);
-			oFile << name << ' ';
-			cout << endl;
-
-			cout << "Enter New Address (number street town postcode): ";
-			getline(cin, address);
-			oFile << address << ' ';
-			cout << endl;
-
-			cout << "Change Overseas Travel? (yes/no): ";
-			getline(cin, overseas);
-			oFile << overseas << ' ';
-			cout << endl;
-
-			cout << "Enter New Symptoms: ";
-			getline(cin, symptom);
-			oFile << symptom << ' ';
-			cout << endl;
-
-			cout << "Enter New High Risk location Visited: ";
-			getline(cin, location);
-			oFile << location << ' ';
-			cout << endl;
-
-			cout << "Enter new positive/negative status: ";
-			getline(cin, result);
-			oFile << result << '\n';
-			cout << endl;
-
-			cout << "Updated Patient Information: ";
-			cout << "Name: " << name << endl;
-			cout << "Address: " << address << endl;
-			cout << "Overseas Travel: " << overseas << endl;
-			cout << "Symptoms: " << symptom << endl;
-			cout << "High risk location visited: " << location << endl;
-			cout << "Test result: " << result << endl;
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			*/
-			//return to main menu//
 		}
 
 		// display covid positive patient details //
