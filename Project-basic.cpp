@@ -30,24 +30,26 @@ int main() {
 		cout << endl;
 		cout << "What would you like to do?" << endl;
 		cout << "Enter '1' to Enter Your Detail For COVID Test Recommendation:" << endl;
+		cout << "Enter '2' to Submit Your COVID-19 Test Status and Update the Location Database:" << endl;
 		cout << "Enter '2' to Display High Risk Locations:" << endl;
-		cout << "Enter '3' to Display the Symptoms of COVID:" << endl;
-		cout << "Enter '4' to Display the COVID-19 Positive Patient Details:" << endl;
-		cout << "Enter '5' to Update Patient Details:" << endl;
+		cout << "Enter '4' to Update Patient Details:" << endl;
+		cout << "Enter '5' to Display the COVID-19 Positive Patient Details:" << endl;
 		cout << "Enter '6' to Quit:" << endl;
+		getline(cin, check);
 		while (true) {
 			try {
 				getline(cin, check);
 				userinput = stoi(check);
 				break;
-			} catch (exception) {
+			}
+			catch (exception) {
 				cout << "Sorry, that input is invalid, Try Again!" << endl;
 				continue;
 			}
 		}
 		cout << endl;
 
-		//covid recommendation//
+		//covid recommendation and patient details//
 		if (userinput == 1) {
 			cout << "Do You Have Any Symptoms? (yes/no)" << endl;
 			getline(cin, usersymptom);
@@ -179,6 +181,7 @@ int main() {
 				while (getline(inFile, line)) {
 					if (line.find(location, 0) != string::npos) {
 						needcheck = "yes";
+						// if user has visited will note on whether needs a covid test with whether they have symptoms answered above //
 					}
 				}
 				inFile.close();
@@ -209,84 +212,47 @@ int main() {
 
 			//returns to main menu//
 		}
-
-		//display high risk locations//
+		
+		// update covid test status and database //
 		else if (userinput == 2) {
-			cout << "The High Risk Locations are:" << endl;
-			cout << endl;
-			cout << endl;
-
-			inFile.open(locationlist);
-			while (getline(inFile, line)) {
-				cout << line << endl;
-				cout << endl;
-			}
-			inFile.close();
-			cout << endl;
-			cout << "End of High Risk Location List" << endl;
-			cout << endl;
-			cout << endl;
+			
 			//opens respective file and reads contents//
 
 			//return to main menu//
 		}
 
-		//display symptoms of covid//
+		// display high risk locations // 
 		else if (userinput == 3) {
-			cout << "The Symptoms of Covid are:" << endl;
-			cout << endl;
-			cout << endl;
+		cout << "The High Risk Locations are:" << endl;
+		cout << endl;
+		cout << endl;
 
-			inFile.open(symptomlist);
-			while (getline(inFile, line)) {
-				cout << line << endl;
-				cout << endl;
-			}
-			inFile.close();
+		inFile.open(locationlist);
+		while (getline(inFile, line)) {
+			cout << line << endl;
 			cout << endl;
+		}
+		inFile.close();
+		cout << endl;
+		cout << "End of High Risk Location List" << endl;
+		cout << endl;
+		cout << endl;
+		//opens respective file and reads contents//
 
-			cout << "End of symptom list" << endl;
-
-			cout << endl;
-			cout << endl;
-			//opens respective file and reads contents//
-
-			//return to main menu//
+		//return to main menu//
 		}
 
-		//display covid positive patient details//
+		// update patient details //
 		else if (userinput == 4) {
-			cout << "Covid Positive Patient Details are:" << endl;
-			cout << endl;
-			cout << endl;
-			result = "positive";
-			inFile.open(patient);
-			cout << "ID - Name - Date of Birth - Address - Overseas Travel - Symptoms - High Risk Location Visited - COVID-19 Test Result" << endl;
-			cout << endl;
-			while (getline(inFile, line)) {
-				if (line.find(result, 0) != string::npos) {
-					cout << line << endl;
-					cout << endl;
-				}
-			}
-			inFile.close();
-			//searches for patient data and prints the data//
-			cout << endl;
-			cout << endl;
-			//return to main menu//
-		}
-
-		//update patient details//
-		else if (userinput == 5) {
-
-			/*cout << "Which Patient Details Do You Wish To Update?" << endl;
+			/*
+			cout << "Which Patient Details Do You Wish To Update?" << endl;
 			cout << "Please input Patient ID: ";
 			getline(cin, check);
 			ID = stoi(check);
 			cout << endl;
 			//find patient data//
 			oFile.open(patient, ios::app);
-
+			
 			cout << "Enter New Name: ";
 			getline(cin, name);
 			oFile << name << ' ';
@@ -332,9 +298,30 @@ int main() {
 			cout << endl;
 			cout << endl;
 			cout << endl;
-
-			//return to main menu//
 			*/
+			//return to main menu//
+		}
+
+		// display covid positive patient details //
+		else if (userinput == 5) {
+			cout << "Covid Positive Patient Details are:" << endl;
+			cout << endl;
+			cout << endl;
+			result = "positive";
+			inFile.open(patient);
+			cout << "ID - Name - Date of Birth - Address - Overseas Travel - Symptoms - High Risk Location Visited - COVID-19 Test Result" << endl;
+			cout << endl;
+			while (getline(inFile, line)) {
+				if (line.find(result, 0) != string::npos) {
+					cout << line << endl;
+					cout << endl;
+				}
+			}
+			inFile.close();
+			//searches for patient data and prints the data//
+			cout << endl;
+			cout << endl;
+			//return to main menu//
 		}
 
 		//quit//
@@ -343,10 +330,9 @@ int main() {
 			cout << "Goodbye!" << endl;
 		}
 
-		//invalid integer input//
+		// invalid integer input //
 		else {
 			cout << "Invalid Input, Please Try Again: ";
-			cin >> userinput;
 			cout << endl;
 			cout << endl;
 
