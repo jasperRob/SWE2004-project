@@ -11,6 +11,56 @@
 using namespace std;
 // #include statement list to include required C++ library functions //
 
+/* 
+ * Check if a line exists for key val pair
+ */
+bool doesExist(int col, string value, string filepath, int totalColumns) {
+	ifstream inFile(filepath);
+	string fileContents;
+	// Open the file
+	if (inFile.is_open()) {
+		string line;
+		// Read all lines of the file
+		while (getline(inFile, line)) {
+			if (!line.empty()) {
+				// Split items by comma and create a map for them
+				stringstream ss(line);
+				for (int i = 0; i < totalColumns; i++) {
+					// Accoutn for escaped commas
+					string item;
+					getline(ss, item, ',');
+					while (item.back() == '\\') {
+						string append;
+						getline(ss, append, ',');
+						item = item.substr(0, item.length()-1);
+						item = item + "," + append;
+					}
+					if (i == col && item == value) {
+						return true;
+					}
+				}
+			}
+		}
+		inFile.close();
+	} else {
+		cout << "Could not open file " << filepath << endl;
+	}
+	return false;
+}
+
+/*
+ * Check if patient exixts with id
+ */
+bool patientDoesExist(int id) {
+	return doesExist(0, to_string(id), "patients.txt", 9);
+}
+
+/*
+ * Check if location exixts with name
+ */
+bool locationDoesExist(string name) {
+	return doesExist(0, name, "locations.txt", 1);
+}
 /**
  * This function will update the value of a patient column
  * @Param id - the id of the user to update
