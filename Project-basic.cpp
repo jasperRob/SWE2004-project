@@ -49,27 +49,25 @@ bool doesExist(int col, string value, string filepath, int totalColumns) {
 }
 
 /*
- * Check if patient exixts with id
+ * Check if patient exixts with a given id
  */
 bool patientDoesExist(int id) {
 	return doesExist(0, to_string(id), "patients.txt", 9);
 }
 
 /*
- * Check if location exixts with name
+ * Check if location exixts with a given name
  */
 bool locationDoesExist(string name) {
 	return doesExist(0, name, "locations.txt", 1);
 }
+
 /**
- * This function will update the value of a patient column
- * @Param id - the id of the user to update
- * @Param index - the index of the value to update
- * @Param value - the value to replace it with
+ * This function will update the value of a row column in a file if mathing value is found
  */
-void updatePatientWithID(int id, int index, string value)
+void updateColumn(int idIndex, string idVal, int index, string value, string filepath, int totalNumColumns)
 {
-	ifstream inFile("patients.txt");
+	ifstream inFile(filepath);
 	string fileContents;
 	// Open the file
 	if (inFile.is_open()) {
@@ -77,61 +75,62 @@ void updatePatientWithID(int id, int index, string value)
 		// Read all lines of the file
 		while (getline(inFile, line)) {
 			if (!line.empty()) {
-				// Split items by comma and create a map for them
+				// Split items by comma
 				stringstream ss(line);
-				string idStr;
-				getline(ss, idStr, ',');
 				// Check if this is the correct user
-				if (stoi(idStr) == id) {
-					fileContents = fileContents + idStr;
-					for (int i = 0; i < 8; i++) {
-						// Accoutn for unescaped commas
-						string item;
-						getline(ss, item, ',');
-						while (item.back() == '\\') {
+				for (int i = 0; i < totalNumColumns; i++) {
+					// Accoutn for unescaped commas
+					string item;
+					getline(ss, item, ',');
+					while (item.back() == '\\') {
+						string append;
+						getline(ss, append, ',');
+						item = item.substr(0, item.length() - 1);
+						item = item + "," + append;
+					}
+					// Don't add delim for first item
+					if (i != 0) {
+						fileContents = fileContents + ",";
+					}
+					// Change the value if at index
+					if (i == index) {
+						stringstream valstream(value);
+						string valItem;
+						getline(valstream, valItem, ',');
+						while (valstream.rdbuf()->in_avail()) {
 							string append;
 							getline(ss, append, ',');
-							item = item.substr(0, item.length() - 1);
-							item = item + "," + append;
+							valItem = valItem + "\\," + append;
 						}
-						// Change the value
-						if (i == index) {
-							stringstream valstream(value);
-							string valItem;
-							getline(valstream, valItem, ',');
-							while (valstream.rdbuf()->in_avail()) {
-								string append;
-								getline(ss, append, ',');
-								valItem = valItem + "\\," + append;
-							}
-							fileContents = fileContents + "," + valItem;
-						}
-						else {
-							fileContents = fileContents + "," + item;
-						}
+						fileContents = fileContents + valItem;
+					} else {
+						fileContents = fileContents + item;
 					}
-					fileContents = fileContents + "\n";
 				}
-				else {
-					fileContents = fileContents + line + "\n";
-				}
+				fileContents = fileContents + "\n";
 			}
 		}
 		inFile.close();
 	}
 	else {
-		cout << "Could not open file patients.txt" << endl;
+		cout << "Could not open file " << filepath << endl;
 	}
-	ofstream outFile("patients.txt", ios::trunc);
+	ofstream outFile(filepath, ios::trunc);
 	if (outFile.is_open()) {
 		outFile << fileContents;
 		outFile.close();
 	}
 	else {
-		cout << "Could not open file patients.txt" << endl;
+		cout << "Could not open file " << filepath << endl;
 	}
 }
 
+/*
+ * Update a patient detail using the ID
+ */
+void updatePatientWithID(int id, int index, string value) {
+	updateColumn(1, toString(id), index, value, "patients.txt", 9);
+}
 
 int main() {
 
