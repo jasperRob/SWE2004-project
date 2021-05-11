@@ -6,8 +6,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <sstream>
+#include<string>
 using namespace std;
 // #include statement list to include required C++ library functions //
 
@@ -91,7 +90,7 @@ void updatePatientWithID(int id, int index, string value)
 						while (item.back() == '\\') {
 							string append;
 							getline(ss, append, ',');
-							item = item.substr(0, item.length()-1);
+							item = item.substr(0, item.length() - 1);
 							item = item + "," + append;
 						}
 						// Change the value
@@ -105,36 +104,41 @@ void updatePatientWithID(int id, int index, string value)
 								valItem = valItem + "\\," + append;
 							}
 							fileContents = fileContents + "," + valItem;
-						} else {
+						}
+						else {
 							fileContents = fileContents + "," + item;
 						}
 					}
 					fileContents = fileContents + "\n";
-				} else {
+				}
+				else {
 					fileContents = fileContents + line + "\n";
 				}
 			}
 		}
 		inFile.close();
-	} else {
+	}
+	else {
 		cout << "Could not open file patients.txt" << endl;
 	}
 	ofstream outFile("patients.txt", ios::trunc);
 	if (outFile.is_open()) {
 		outFile << fileContents;
 		outFile.close();
-	} else {
+	}
+	else {
 		cout << "Could not open file patients.txt" << endl;
 	}
 }
+
 
 int main() {
 
 	string symptomlist = "symptoms.txt";
 	string locationlist = "location.txt";
 	string patient = "patients.txt";
-	int userinput, information;
-	string overseas, test, status, usersymptom, address, name, symptom, location, dateentered, DOB, check, line, result, ID, needcheck;
+	int userinput, information, ID;
+	string overseas, test, status, usersymptom, address, name, symptom, location, dateentered, DOB, check, line, result, needcheck;
 	ofstream oFile;
 	ifstream inFile;
 	//user input variables//
@@ -203,7 +207,17 @@ int main() {
 			//and searches through the database to match with an exisitng patient//
 			if (information == 1) {
 				cout << "Enter Patient ID: ";
-				getline(cin, ID);
+				while (true) {
+					try {
+						getline(cin, check);
+						ID = stoi(check);
+						break;
+					}
+					catch (exception) {
+						cout << "Sorry, that input is invalid, Try Again!" << endl;
+						continue;
+					}
+				}
 				cout << endl;
 				cout << "Patient Information: ";
 				cout << endl;
@@ -211,7 +225,7 @@ int main() {
 				cout << endl;
 				inFile.open(patient);
 				while (getline(inFile, line)) {
-					if (line.find(ID, 0) != string::npos) {
+					if (line.find(to_string(ID), 0) != string::npos) {
 						cout << line << endl;
 					}
 				}
@@ -372,20 +386,28 @@ int main() {
 
 		// update patient details //
 		else if (userinput == 4) {
-			cout << "Which Patient Details Do You Wish To Update?" << endl;
-			cout << "Please input Patient ID: ";
-			getline(cin, check);
-			int id = stoi(check);
-			cout << endl;
-			//find patient data//
-			
-			string newName;
-			cout << "Enter New Name: ";
-			getline(cin, newName);
-			cout << endl;
 
-			// Update name of patient
-			updatePatientWithID(id, 0, newName);
+			cout << "Which Patient Details Do You Wish To Update?" << endl;
+				cout << "Please input Patient ID: ";
+				while (true) {
+					try {
+						getline(cin, check);
+						ID = stoi(check);
+					}
+					catch (exception) {
+						cout << "Sorry, that input is invalid, Try Again!" << endl;
+						continue;
+					}
+				}
+				cout << endl;
+				//find patient data//
+
+				cout << "Enter New Name: ";
+				getline(cin, name);
+				cout << endl;
+
+				// Update name of patient
+				updatePatientWithID(ID, 0, name);
 
 			//return to main menu//
 		}
