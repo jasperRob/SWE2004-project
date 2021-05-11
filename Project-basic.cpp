@@ -35,12 +35,16 @@ int main() {
 		cout << "Enter '4' to Update Patient Details:" << endl;
 		cout << "Enter '5' to Display the COVID-19 Positive Patient Details:" << endl;
 		cout << "Enter '6' to Quit:" << endl;
-		getline(cin, check);
 		while (true) {
 			try {
 				getline(cin, check);
 				userinput = stoi(check);
-				break;
+				if (userinput > 0 && userinput < 7) {
+					break;
+				}
+				else {
+					cout << "Invalid input please try again: ";
+				}
 			}
 			catch (exception) {
 				cout << "Sorry, that input is invalid, Try Again!" << endl;
@@ -63,8 +67,17 @@ int main() {
 			cout << "Enter '5' for Overseas Travel:" << endl;
 			cout << "Enter '6' for Symptoms:" << endl;
 			cout << "Enter '7' for High Risk COVID Area Location:" << endl;
-			getline(cin, check);
-			information = stoi(check);
+			while (true) {
+				try {
+					getline(cin, check);
+					information = stoi(check);
+					break;
+				}
+				catch (exception) {
+					cout << "Sorry, that input is invalid, Try Again!" << endl;
+					continue;
+				}
+			}
 			cout << endl;
 			//takes in user input for which information they will enter//
 
@@ -198,10 +211,7 @@ int main() {
 				inFile.close();
 				//searches for patient data and prints the data//
 			}
-			else {
-				cout << "Invalid Input. Please Try Again" << endl;
 
-			}
 			cout << endl;
 			if ((needcheck == "yes") || (usersymptom == "yes")) {
 				cout << "Recommended that this patient gets a COVID-19 Test Imediately and Isolate until results come back!" << endl;
@@ -223,42 +233,27 @@ int main() {
 
 		// display high risk locations // 
 		else if (userinput == 3) {
-			cout << "The High Risk Locations are:" << endl;
-			cout << endl;
-			cout << endl;
+		cout << "The High Risk Locations are:" << endl;
+		cout << endl;
+		cout << endl;
 
-			inFile.open(locationlist);
-			while (getline(inFile, line)) {
-				cout << line << endl;
-				cout << endl;
-			}
-			inFile.close();
+		inFile.open(locationlist);
+		while (getline(inFile, line)) {
+			cout << line << endl;
 			cout << endl;
-			cout << "End of High Risk Location List" << endl;
-			cout << endl;
-			cout << endl;
-			//opens respective file and reads contents//
+		}
+		inFile.close();
+		cout << endl;
+		cout << "End of High Risk Location List" << endl;
+		cout << endl;
+		cout << endl;
+		//opens respective file and reads contents//
 
-			//return to main menu//
+		//return to main menu//
 		}
 
 		// update patient details //
 		else if (userinput == 4) {
-			cout << "Would You Like to Update an Existing Patient or Add a New Patient?" << endl;
-			cout << "Enter 1 For Existing Patient and 2 For New Patient" << endl;
-			getline(cin, check);
-			if(check = 1){
-				
-			}
-			else if(check = 2){
-				
-			}
-			else {
-				while((check != 1) || (check != 2)){
-					cout << "Invalid input please try again: " ;
-					getline(cin, check);
-				}
-			}
 			
 		}
 
@@ -288,15 +283,6 @@ int main() {
 		else if (userinput == 6) {
 			cout << "Thank You For Using Our COVID-19 Database Management System!" << endl;
 			cout << "Goodbye!" << endl;
-		}
-
-		// invalid integer input //
-		else {
-			cout << "Invalid Input, Please Try Again: ";
-			cout << endl;
-			cout << endl;
-
-			//return to main menu//
 		}
 
 	} while (userinput != 6);
