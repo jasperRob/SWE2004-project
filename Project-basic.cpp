@@ -6,9 +6,77 @@
 
 #include <iostream>
 #include <fstream>
-#include<string>
+#include <string>
+#include <sstream>
 using namespace std;
 // #include statement list to include required C++ library functions //
+
+/**
+ * This function will update the value of a patient column
+ * @Param id - the id of the user to update
+ * @Param index - the index of the value to update
+ * @Param value - the value to replace it with
+ */
+void updatePatientWithID(int id, int index, string value)
+{
+	ifstream inFile("patients.txt");
+	string fileContents;
+	// Open the file
+	if (inFile.is_open()) {
+		string line;
+		// Read all lines of the file
+		while (getline(inFile, line)) {
+			if (!line.empty()) {
+				// Split items by comma and create a map for them
+				stringstream ss(line);
+				string idStr;
+				getline(ss, idStr, ',');
+				// Check if this is the correct user
+				if (stoi(idStr) == id) {
+					fileContents = fileContents + idStr;
+					for (int i = 0; i < 8; i++) {
+						// Accoutn for unescaped commas
+						string item;
+						getline(ss, item, ',');
+						while (item.back() == '\\') {
+							string append;
+							getline(ss, append, ',');
+							item = item.substr(0, item.length()-1);
+							item = item + "," + append;
+						}
+						// Change the value
+						if (i == index) {
+							stringstream valstream(value);
+							string valItem;
+							getline(valstream, valItem, ',');
+							while (valstream.rdbuf()->in_avail()) {
+								string append;
+								getline(ss, append, ',');
+								valItem = valItem + "\\," + append;
+							}
+							fileContents = fileContents + "," + valItem;
+						} else {
+							fileContents = fileContents + "," + item;
+						}
+					}
+					fileContents = fileContents + "\n";
+				} else {
+					fileContents = fileContents + line + "\n";
+				}
+			}
+		}
+		inFile.close();
+	} else {
+		cout << "Could not open file patients.txt" << endl;
+	}
+	ofstream outFile("patients.txt", ios::trunc);
+	if (outFile.is_open()) {
+		outFile << fileContents;
+		outFile.close();
+	} else {
+		cout << "Could not open file patients.txt" << endl;
+	}
+}
 
 int main() {
 
@@ -35,7 +103,6 @@ int main() {
 		cout << "Enter '4' to Update Patient Details:" << endl;
 		cout << "Enter '5' to Display the COVID-19 Positive Patient Details:" << endl;
 		cout << "Enter '6' to Quit:" << endl;
-		getline(cin, check);
 		while (true) {
 			try {
 				getline(cin, check);
@@ -244,61 +311,21 @@ int main() {
 
 		// update patient details //
 		else if (userinput == 4) {
-			/*
 			cout << "Which Patient Details Do You Wish To Update?" << endl;
 			cout << "Please input Patient ID: ";
 			getline(cin, check);
-			ID = stoi(check);
+			int id = stoi(check);
 			cout << endl;
 			//find patient data//
-			oFile.open(patient, ios::app);
 			
+			string newName;
 			cout << "Enter New Name: ";
-			getline(cin, name);
-			oFile << name << ' ';
+			getline(cin, newName);
 			cout << endl;
 
-			cout << "Enter date of birth(dd/mm/yyyy): ";
-			getline(cin, name);
-			oFile << name << ' ';
-			cout << endl;
+			// Update name of patient
+			updatePatientWithID(id, 0, newName);
 
-			cout << "Enter New Address (number street town postcode): ";
-			getline(cin, address);
-			oFile << address << ' ';
-			cout << endl;
-
-			cout << "Change Overseas Travel? (yes/no): ";
-			getline(cin, overseas);
-			oFile << overseas << ' ';
-			cout << endl;
-
-			cout << "Enter New Symptoms: ";
-			getline(cin, symptom);
-			oFile << symptom << ' ';
-			cout << endl;
-
-			cout << "Enter New High Risk location Visited: ";
-			getline(cin, location);
-			oFile << location << ' ';
-			cout << endl;
-
-			cout << "Enter new positive/negative status: ";
-			getline(cin, result);
-			oFile << result << '\n';
-			cout << endl;
-
-			cout << "Updated Patient Information: ";
-			cout << "Name: " << name << endl;
-			cout << "Address: " << address << endl;
-			cout << "Overseas Travel: " << overseas << endl;
-			cout << "Symptoms: " << symptom << endl;
-			cout << "High risk location visited: " << location << endl;
-			cout << "Test result: " << result << endl;
-			cout << endl;
-			cout << endl;
-			cout << endl;
-			*/
 			//return to main menu//
 		}
 
