@@ -6,7 +6,8 @@
 
 #include <iostream>
 #include <fstream>
-#include<string>
+#include <string>
+#include <sstream>
 using namespace std;
 // #include statement list to include required C++ library functions //
 
