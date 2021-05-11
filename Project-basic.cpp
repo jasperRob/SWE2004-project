@@ -129,7 +129,7 @@ void updateColumn(int idIndex, string idVal, int index, string value, string fil
  * Update a patient detail using the ID
  */
 void updatePatientWithID(int id, int index, string value) {
-	updateColumn(1, toString(id), index, value, "patients.txt", 9);
+	updateColumn(1, to_string(id), index, value, "patients.txt", 9);
 }
 
 int main() {
