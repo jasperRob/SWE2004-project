@@ -76,8 +76,10 @@ void updateColumn(int idIndex, string idVal, int index, string value, string fil
 		while (getline(inFile, line)) {
 			if (!line.empty()) {
 				// Split items by comma
+				string updatedLine;
 				stringstream ss(line);
 				// Check if this is the correct user
+				bool hasId = false;
 				for (int i = 0; i < totalNumColumns; i++) {
 					// Accoutn for unescaped commas
 					string item;
@@ -88,9 +90,12 @@ void updateColumn(int idIndex, string idVal, int index, string value, string fil
 						item = item.substr(0, item.length() - 1);
 						item = item + "," + append;
 					}
+					if (i == idIndex && item == idVal) {
+						hasId = true;
+					}
 					// Don't add delim for first item
-					if (i != 0) {
-						fileContents = fileContents + ",";
+					if (i > 0) {
+						updatedLine = updatedLine + ",";
 					}
 					// Change the value if at index
 					if (i == index) {
@@ -102,12 +107,16 @@ void updateColumn(int idIndex, string idVal, int index, string value, string fil
 							getline(ss, append, ',');
 							valItem = valItem + "\\," + append;
 						}
-						fileContents = fileContents + valItem;
+						updatedLine = updatedLine + valItem;
 					} else {
-						fileContents = fileContents + item;
+						updatedLine = updatedLine + item;
 					}
 				}
-				fileContents = fileContents + "\n";
+				if (hasId) {
+					fileContents = fileContents + updatedLine + "\n";
+				} else {
+					fileContents = fileContents + line + "\n";
+				}
 			}
 		}
 		inFile.close();
@@ -129,7 +138,7 @@ void updateColumn(int idIndex, string idVal, int index, string value, string fil
  * Update a patient detail using the ID
  */
 void updatePatientWithID(int id, int index, string value) {
-	updateColumn(1, to_string(id), index, value, "patients.txt", 9);
+	updateColumn(0, to_string(id), index, value, "patients.txt", 9);
 }
 
 int main() {
@@ -406,8 +415,8 @@ int main() {
 				getline(cin, name);
 				cout << endl;
 
-				// Update name of patient
-				updatePatientWithID(ID, 0, name);
+				// Update name of patient  NOTE: ID is at the zero index now
+				updatePatientWithID(ID, 1, name);
 
 			//return to main menu//
 		}

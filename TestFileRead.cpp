@@ -15,15 +15,11 @@
 #include <string>
 using namespace std;
 
-/**
- * This function will update the value of a patient column
- * @Param id - the id of the user to update
- * @Param index - the index of the value to update
- * @Param value - the value to replace it with
+/* 
+ * Check if a line exists for key val pair
  */
-void updatePatientWithID(int id, int index, string value)
-{
-	ifstream inFile("patients.txt");
+bool doesExist(int col, string value, string filepath, int totalColumns) {
+	ifstream inFile(filepath);
 	string fileContents;
 	// Open the file
 	if (inFile.is_open()) {
@@ -33,71 +29,148 @@ void updatePatientWithID(int id, int index, string value)
 			if (!line.empty()) {
 				// Split items by comma and create a map for them
 				stringstream ss(line);
-				string idStr;
-				getline(ss, idStr, ',');
+				for (int i = 0; i < totalColumns; i++) {
+					// Accoutn for escaped commas
+					string item;
+					getline(ss, item, ',');
+					while (item.back() == '\\') {
+						string append;
+						getline(ss, append, ',');
+						item = item.substr(0, item.length()-1);
+						item = item + "," + append;
+					}
+					if (i == col && item == value) {
+						return true;
+					}
+				}
+			}
+		}
+		inFile.close();
+	} else {
+		cout << "Could not open file " << filepath << endl;
+	}
+	return false;
+}
+
+/*
+ * Check if patient exixts with a given id
+ */
+bool patientDoesExist(int id) {
+	return doesExist(0, to_string(id), "patients.txt", 9);
+}
+
+/*
+ * Check if location exixts with a given name
+ */
+bool locationDoesExist(string name) {
+	return doesExist(0, name, "locations.txt", 1);
+}
+
+/**
+ * This function will update the value of a row column in a file if mathing value is found
+ */
+void updateColumn(int idIndex, string idVal, int index, string value, string filepath, int totalNumColumns)
+{
+	ifstream inFile(filepath);
+	string fileContents;
+	// Open the file
+	if (inFile.is_open()) {
+		string line;
+		// Read all lines of the file
+		while (getline(inFile, line)) {
+			if (!line.empty()) {
+				// Split items by comma
+				string updatedLine;
+				stringstream ss(line);
 				// Check if this is the correct user
-				if (stoi(idStr) == id) {
-					fileContents = fileContents + idStr;
-					for (int i = 0; i < 8; i++) {
-						// Accoutn for unescaped commas
-						string item;
-						getline(ss, item, ',');
-						while (item.back() == '\\') {
+				bool hasId = false;
+				for (int i = 0; i < totalNumColumns; i++) {
+					// Accoutn for unescaped commas
+					string item;
+					getline(ss, item, ',');
+					while (item.back() == '\\') {
+						string append;
+						getline(ss, append, ',');
+						item = item.substr(0, item.length() - 1);
+						item = item + "," + append;
+					}
+					if (i == idIndex && item == idVal) {
+						hasId = true;
+					}
+					// Don't add delim for first item
+					if (i > 0) {
+						updatedLine = updatedLine + ",";
+					}
+					// Change the value if at index
+					if (i == index) {
+						stringstream valstream(value);
+						string valItem;
+						getline(valstream, valItem, ',');
+						while (valstream.rdbuf()->in_avail()) {
 							string append;
 							getline(ss, append, ',');
-							item = item.substr(0, item.length()-1);
-							item = item + "," + append;
+							valItem = valItem + "\\," + append;
 						}
-						// Change the value
-						if (i == index) {
-							stringstream valstream(value);
-							string valItem;
-							getline(valstream, valItem, ',');
-							while (valstream.rdbuf()->in_avail()) {
-								string append;
-								getline(ss, append, ',');
-								valItem = valItem + "\\," + append;
-							}
-							fileContents = fileContents + "," + valItem;
-						} else {
-							fileContents = fileContents + "," + item;
-						}
+						updatedLine = updatedLine + valItem;
+					} else {
+						updatedLine = updatedLine + item;
 					}
-					fileContents = fileContents + "\n";
+				}
+				if (hasId) {
+					fileContents = fileContents + updatedLine + "\n";
 				} else {
 					fileContents = fileContents + line + "\n";
 				}
 			}
 		}
 		inFile.close();
-	} else {
-		cout << "Could not open file patients.txt" << endl;
 	}
-	ofstream outFile("patients.txt", ios::trunc);
+	else {
+		cout << "Could not open file " << filepath << endl;
+	}
+	ofstream outFile(filepath, ios::trunc);
 	if (outFile.is_open()) {
 		outFile << fileContents;
 		outFile.close();
-	} else {
-		cout << "Could not open file patients.txt" << endl;
 	}
+	else {
+		cout << "Could not open file " << filepath << endl;
+	}
+}
+
+/*
+ * Update a patient detail using the ID
+ */
+void updatePatientWithID(int id, int index, string value) {
+	updateColumn(0, to_string(id), index, value, "patients.txt", 9);
 }
 
 int main() {
 
-	string input, name;
+	string input, name, dob;
 	int id;
 
 	// Ask for the id and name to update
 	cout << "Enter a user ID: ";
 	getline(cin, input);
 	id = stoi(input);
-	cout << "Enter a new name for this user: ";
-	getline(cin, name);
+	/* cout << "Enter a new name for this user: "; */
+	/* getline(cin, name); */
+	/* cout << endl; */
+	cout << "Enter a new dob for this user: ";
+	getline(cin, dob);
 	cout << endl;
 
+	if (doesExist(0, to_string(id), "patients.txt", 9)) {
+		cout << "YES" << endl;
+	} else {
+		cout << "NO" << endl;
+	}
+
 	// call this function to set the name of the patient in patients.txt
-	// We pass 0 because the name is item 0 after the id
-	updatePatientWithID(id, 0, name);
+	// We pass 1 because the name is item 1 after the id
+	/* updatePatientWithID(id, 1, name); */
+	updatePatientWithID(id, 2, dob);
 
 	return 0;
 }
