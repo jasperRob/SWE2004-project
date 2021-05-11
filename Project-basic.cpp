@@ -107,7 +107,12 @@ int main() {
 			try {
 				getline(cin, check);
 				userinput = stoi(check);
-				break;
+				if (userinput > 0 && userinput < 7) {
+					break;
+				}
+				else {
+					cout << "Invalid input please try again: ";
+				}
 			}
 			catch (exception) {
 				cout << "Sorry, that input is invalid, Try Again!" << endl;
@@ -130,8 +135,17 @@ int main() {
 			cout << "Enter '5' for Overseas Travel:" << endl;
 			cout << "Enter '6' for Symptoms:" << endl;
 			cout << "Enter '7' for High Risk COVID Area Location:" << endl;
-			getline(cin, check);
-			information = stoi(check);
+			while (true) {
+				try {
+					getline(cin, check);
+					information = stoi(check);
+					break;
+				}
+				catch (exception) {
+					cout << "Sorry, that input is invalid, Try Again!" << endl;
+					continue;
+				}
+			}
 			cout << endl;
 			//takes in user input for which information they will enter//
 
@@ -265,10 +279,7 @@ int main() {
 				inFile.close();
 				//searches for patient data and prints the data//
 			}
-			else {
-				cout << "Invalid Input. Please Try Again" << endl;
 
-			}
 			cout << endl;
 			if ((needcheck == "yes") || (usersymptom == "yes")) {
 				cout << "Recommended that this patient gets a COVID-19 Test Imediately and Isolate until results come back!" << endl;
@@ -355,15 +366,6 @@ int main() {
 		else if (userinput == 6) {
 			cout << "Thank You For Using Our COVID-19 Database Management System!" << endl;
 			cout << "Goodbye!" << endl;
-		}
-
-		// invalid integer input //
-		else {
-			cout << "Invalid Input, Please Try Again: ";
-			cout << endl;
-			cout << endl;
-
-			//return to main menu//
 		}
 
 	} while (userinput != 6);
