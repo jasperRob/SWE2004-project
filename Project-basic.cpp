@@ -202,7 +202,39 @@ int main() {
 			}
 			cout << endl;
 			if (userinput = 1) {
+				oFile.open(patient, ios::app);
+				//opens file in append mode//
 
+				getline(cin, check);
+
+				cout << "Enter Patient Name: ";
+				getline(cin, check);
+				oFile << check << ",";
+				cout << endl;
+
+				cout << "Enter Patient DOB (dd/mm/yyy): ";
+				getline(cin, check);
+				oFile << check << ",";
+				cout << endl;
+
+				cout << "Enter Patient Address: ";
+				getline(cin, check);
+				oFile << check << ",";
+				cout << endl;
+
+				cout << "Enter Unit Details: ";
+				getline(cin, check);
+				oFile << check << ",";
+				cout << endl;
+
+				cout << "Enter Grades: ";
+				getline(cin, check);
+				oFile << check << "\n";
+				//takes in all of the patients details and stores in text file//
+
+				oFile.close();
+				// close the opened file//
+				cout << endl;
 			}
 
 			// below is the input system to search for an existing patient for COVID-19 recommentdation //
