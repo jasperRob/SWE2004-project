@@ -139,7 +139,7 @@ int main() {
 	string symptomlist = "symptoms.txt";
 	string locationlist = "location.txt";
 	string patient = "patients.txt";
-	int userinput, information, ID;
+	int userinput, information, ID, existing;
 	string overseas, test, status, usersymptom, address, name, symptom, location, dateentered, DOB, check, line, result, needcheck;
 	ofstream oFile;
 	ifstream inFile;
@@ -155,7 +155,7 @@ int main() {
 		cout << "What would you like to do?" << endl;
 		cout << "Enter '1' to Enter Your Detail For COVID Test Recommendation:" << endl;
 		cout << "Enter '2' to Submit Your COVID-19 Test Status and Update the Location Database:" << endl;
-		cout << "Enter '2' to Display High Risk Locations:" << endl;
+		cout << "Enter '3' to Display High Risk Locations:" << endl;
 		cout << "Enter '4' to Update Patient Details:" << endl;
 		cout << "Enter '5' to Display the COVID-19 Positive Patient Details:" << endl;
 		cout << "Enter '6' to Quit:" << endl;
@@ -187,8 +187,8 @@ int main() {
 			while (true) {
 				try {
 					getline(cin, check);
-					userinput = stoi(check);
-					if (userinput > 0 && userinput < 3) {
+					existing = stoi(check);
+					if (existing > 0 && existing < 3) {
 						break;
 					}
 					else {
@@ -201,13 +201,11 @@ int main() {
 				}
 			}
 			cout << endl;
-			if (userinput = 1) {
+			if (existing == 1) {
 				oFile.open(patient, ios::app);
 				//opens file in append mode//
 
-				getline(cin, check);
-
-				cout << "Enter Patient Name: ";
+				cout << "Enter New Patient Name: ";
 				getline(cin, check);
 				oFile << check << ",";
 				cout << endl;
@@ -238,7 +236,7 @@ int main() {
 			}
 
 			// below is the input system to search for an existing patient for COVID-19 recommentdation //
-			if (userinput = 2) {
+			if (existing == 2) {
 				cout << "Please Enter Your Details." << endl;
 				cout << "What Detail Will You Enter?" << endl;
 				cout << "Enter '1' for Patient ID:" << endl;
