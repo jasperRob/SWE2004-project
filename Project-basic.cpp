@@ -268,11 +268,11 @@ int main() {
 					continue;
 				}
 			}
-			cout << "Please enter COVID-19 Test Result (Positive/Negative): ";
+			cout << "Please enter COVID-19 Test Result (positive/negative): ";
 			getline(cin, status);
-			if ((status != "Positive") && (status != "Negative")) {
-				while ((status != "Positive") && (status != "Negative")) {
-					cout << "Invalid input, please try again (Positive/Negative): ";
+			if ((status != "positive") && (status != "negative")) {
+				while ((status != "positive") && (status != "negative")) {
+					cout << "Invalid input, please try again (positive/negative): ";
 					getline(cin, status);
 					cout << endl;
 				}
