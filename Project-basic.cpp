@@ -335,12 +335,13 @@ int main() {
 			cout << endl;
 
 			cout << "What Data Would You Like To Update?" << endl;
-			cout << "Enter '2' for Name:" << endl;
-			cout << "Enter '3' for Date of Birth:" << endl;
-			cout << "Enter '4' for Address:" << endl;
-			cout << "Enter '5' for Overseas Travel:" << endl;
-			cout << "Enter '6' for Symptoms:" << endl;
-			cout << "Enter '7' for High Risk COVID Area Location:" << endl;
+			cout << "Enter '1' for Name:" << endl;
+			cout << "Enter '2' for Date of Birth:" << endl;
+			cout << "Enter '3' for Address:" << endl;
+			cout << "Enter '4' for New High Risk Location Visited:" << endl;
+			cout << "Enter '5' for Symptoms:" << endl;
+			cout << "Enter '6' for New COVID Test Result:" << endl;
+			cout << "Enter '7' for New Status" << endl;
 			while (true) {
 				try {
 					getline(cin, check);
