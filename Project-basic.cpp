@@ -377,6 +377,43 @@ int main() {
 				// Update address of patient
 				updatePatientWithID(ID, 3, check);
 			}
+			else if (information = 4) {
+				cout << "Enter New High Risk Location Visited: ";
+				getline(cin, check);
+				cout << endl;
+
+				updatePatientWithID(ID, 4, check);
+				cout << "Enter Date Visited: ";
+				getline(cin, check);
+				cout << endl;
+
+				// Update location and date visited //
+				updatePatientWithID(ID, 5, check);
+			}
+			else if (information = 5) {
+				cout << "Does Patient Have Symptoms?: ";
+				getline(cin, check);
+				cout << endl;
+
+				// Update symptoms of patient // 
+				updatePatientWithID(ID, 6, check);
+			}
+			else if (information = 6) {
+				cout << "Enter New COVID-19 Test Result: ";
+				getline(cin, check);
+				cout << endl;
+
+				// Update test result//
+				updatePatientWithID(ID, 7, check);
+			}
+			else if (information = 7) {
+				cout << "Enter New Status: ";
+				getline(cin, check);
+				cout << endl;
+
+				// Update status of patient //
+				updatePatientWithID(ID, 8, check);
+			}
 			//return to main menu//
 		}
 
