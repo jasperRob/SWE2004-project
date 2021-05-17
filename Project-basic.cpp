@@ -68,6 +68,13 @@ bool locationDoesExist(string name) {
 	return doesExist(0, name, LOCATION_FILEPATH, 1);
 }
 
+/*
+ * Check if location exixts with a given name
+ */
+bool isHighRiskSymptom(string symptom) {
+	return doesExist(2, symptom, SYMPTOM_FILEPATH, 3);
+}
+
 /**
  * This function will update the value of a row column in a file if mathing value is found
  */
@@ -152,7 +159,7 @@ void updatePatientWithID(int id, int index, string value) {
 int main() {
 
 	int userinput, information, ID, existing;
-	string overseas, test, status, userSymptoms, address, name, symptom, location, dateentered, DOB, check, line, result, needcheck;
+	string overseas, test, status, userSymptoms, address, name, symptom, location, dateentered, DOB, check, line, result, needcheck, dateVisited;
 	bool hasVisitedHighRiskLoc;
 	ofstream oFile;
 	ifstream inFile;
@@ -211,45 +218,28 @@ int main() {
 			if (!patientDoesExist(ID)) {
 				// Opens file in append mode
 				oFile.open(PATIENT_FILEPATH, ios::app);
-				oFile << check << ",";
 				// Takes in all of the patients details and stores in text file
 				cout << "Enter New Patient Name: ";
-				getline(cin, check);
-				oFile << check << ",";
+				getline(cin, name);
 				cout << "Enter Patient DOB (dd/mm/yyy): ";
-				getline(cin, check);
-				oFile << check << ",";
+				getline(cin, DOB);
 				cout << "Enter Patient Address: ";
-				getline(cin, check);
-				oFile << check << ",";
+				getline(cin, address);
 				cout << "Enter High Risk Location Visited: ";
-				getline(cin, check);
-				oFile << check << ",";
-				if (locationDoesExist(check)) {
-					hasVisitedHighRiskLoc = true;
-				}
+				getline(cin, location);
 				cout << "Enter Date Visited: ";
-				getline(cin, check);
-				oFile << check << ",";
+				getline(cin, dateVisited);
 				cout << "Enter Patient Symptoms: ";
-				getline(cin, check);
-				oFile << check << ",";
-				inFile.open(SYMPTOM_FILEPATH);
-				while (getline(inFile, line)) {
-					if (line.find(result, 0) != string::npos) {
-						userSymptoms = "yes";
-					}
-				}
-				inFile.close();
+				getline(cin, symptom);
 				cout << "Enter COVID-19 Test Result: ";
-				getline(cin, check);
-				oFile << check << ",";
+				getline(cin, result);
 				cout << "Enter Status: ";
-				getline(cin, check);
-				oFile << check << "\n";
+				getline(cin, status);
+				// Output new users data to file
+				oFile << ID << "," << name << "," << DOB << "," << address << "," << location << "," << dateVisited << "," << symptom << "," << result << "," << status << "\n";
 				// Close the opened file
 				oFile.close();
-				if (hasVisitedHighRiskLoc && userSymptoms == "yes") {
+				if (locationDoesExist(location) || isHighRiskSymptom(symptom)) {
 					cout << endl << "Recommended that this patient gets a COVID-19 Test Imediately and Isolate until results come back!" << endl;
 				}
 			}
