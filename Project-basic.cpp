@@ -16,7 +16,7 @@ string PATIENT_FILEPATH = "patients.txt";
 string LOCATION_FILEPATH = "locations.txt";
 string SYMPTOM_FILEPATH = "symptoms.txt";
 
-/* 
+/*
  * Check if a line exists for key val pair
  */
 bool doesExist(int col, string value, string filepath, int totalColumns) {
@@ -37,7 +37,7 @@ bool doesExist(int col, string value, string filepath, int totalColumns) {
 					while (item.back() == '\\') {
 						string append;
 						getline(ss, append, ',');
-						item = item.substr(0, item.length()-1);
+						item = item.substr(0, item.length() - 1);
 						item = item + "," + append;
 					}
 					if (i == col && item == value) {
@@ -47,7 +47,8 @@ bool doesExist(int col, string value, string filepath, int totalColumns) {
 			}
 		}
 		inFile.close();
-	} else {
+	}
+	else {
 		cout << "Could not open file " << filepath << endl;
 	}
 	return false;
@@ -113,26 +114,30 @@ void updateColumn(int idIndex, string idVal, int index, string value, string fil
 							valItem = valItem + "\\," + append;
 						}
 						updatedLine = updatedLine + valItem;
-					} else {
+					}
+					else {
 						updatedLine = updatedLine + item;
 					}
 				}
 				if (hasId) {
 					fileContents = fileContents + updatedLine + "\n";
-				} else {
+				}
+				else {
 					fileContents = fileContents + line + "\n";
 				}
 			}
 		}
 		inFile.close();
-	} else {
+	}
+	else {
 		cout << "Could not open file " << filepath << endl;
 	}
 	ofstream outFile(filepath, ios::trunc);
 	if (outFile.is_open()) {
 		outFile << fileContents;
 		outFile.close();
-	} else {
+	}
+	else {
 		cout << "Could not open file " << filepath << endl;
 	}
 }
@@ -173,7 +178,8 @@ int main() {
 				userinput = stoi(check);
 				if (userinput > 0 && userinput < 7) {
 					break;
-				} else {
+				}
+				else {
 					cout << "Invalid input please try again: ";
 				}
 			}
@@ -195,7 +201,8 @@ int main() {
 					getline(cin, check);
 					ID = stoi(check);
 					break;
-				} catch (exception) {
+				}
+				catch (exception) {
 					cout << "Sorry, that input is invalid, Try Again!" << endl;
 					continue;
 				}
@@ -247,14 +254,33 @@ int main() {
 				}
 			}
 			else {
-				cout << endl << "Sorry, a Patient already exists with that ID" << endl;
+				cout << endl << "That Patient already exists with that ID" << endl;
+				inFile.open(PATIENT_FILEPATH);
+				check = to_string(ID);
+				cout << "ID - Name - Date of Birth - Address - High Risk Location Visited - Date Visited - Symptoms - COVID-19  Test Result - Status" << endl;
+				cout << endl;
+				while (getline(inFile, line)) {
+					if (line.find(check, 0) != string::npos) {
+						cout << line << endl;
+						cout << endl;
+					}
+				}
+				inFile.close();
+				cout << "Has Patient Visted a High Risk Location? (yes/no): " << endl;
+				getline(cin, check);
+				cout << "Does Patient Have Symptoms (yes/no): " << endl;
+				getline(cin, symptom);
+				if ((check == "yes") && (symptom == "yes")) {
+					cout << "Recommend That This Patient Gets a COVID-19 Test and Isolates Until Results are Available" << endl;;
+				}
 			}
 			cout << endl << "Press ENTER to continue to menu...";
 			cin.ignore();
 			cout << endl;
 
-		// Update covid test status and database
-		} else if (userinput == 2) {
+			// if patient exists prints them out and gives a COVID test recommendation // 
+		}
+		else if (userinput == 2) {
 
 			cout << "Please enter patient ID: ";
 			while (true) {
@@ -262,7 +288,8 @@ int main() {
 					getline(cin, check);
 					ID = stoi(check);
 					break;
-				} catch (exception) {
+				}
+				catch (exception) {
 					cout << "Sorry, that input is invalid, Try Again!" << endl;
 					continue;
 				}
@@ -286,7 +313,8 @@ int main() {
 					oFile << location << endl;
 					oFile.close();
 					cout << location << " added to location database";
-				} else {
+				}
+				else {
 					cout << location << " already exists in location database";
 				}
 			}
@@ -295,8 +323,9 @@ int main() {
 			cin.ignore();
 			cout << endl;
 
-		// Display high risk locations
-		} else if (userinput == 3) {
+			// Display high risk locations
+		}
+		else if (userinput == 3) {
 			cout << "The High Risk Locations are:" << endl;
 			cout << endl;
 			cout << endl;
@@ -326,7 +355,8 @@ int main() {
 					getline(cin, check);
 					ID = stoi(check);
 					break;
-				} catch (exception) {
+				}
+				catch (exception) {
 					cout << "Sorry, that input is invalid, Try Again!" << endl;
 					continue;
 				}
@@ -346,7 +376,8 @@ int main() {
 					getline(cin, check);
 					information = stoi(check);
 					break;
-				} catch (exception) {
+				}
+				catch (exception) {
 					cout << "Sorry, that input is invalid, Try Again!" << endl;
 					continue;
 				}
@@ -391,7 +422,7 @@ int main() {
 				updatePatientWithID(ID, 5, check);
 			}
 			else if (information = 5) {
-				cout << "Does Patient Have Symptoms?: ";
+				cout << "Enter New Symptom: ";
 				getline(cin, check);
 				cout << endl;
 
@@ -438,7 +469,7 @@ int main() {
 			cout << endl;
 			//return to main menu//
 		}
-	// Quit if input is 6
+		// Quit if input is 6
 	} while (userinput != 6);
 
 	cout << "Thank You For Using Our COVID-19 Database Management System!" << endl << "Goodbye!" << endl;
