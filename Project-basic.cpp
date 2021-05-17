@@ -408,7 +408,7 @@ int main() {
 				// Update address of patient
 				updatePatientWithID(ID, 3, check);
 			}
-			else if (information = 4) {
+			else if (information == 4) {
 				cout << "Enter New High Risk Location Visited: ";
 				getline(cin, check);
 				cout << endl;
@@ -421,7 +421,7 @@ int main() {
 				// Update location and date visited //
 				updatePatientWithID(ID, 5, check);
 			}
-			else if (information = 5) {
+			else if (information == 5) {
 				cout << "Enter New Symptom: ";
 				getline(cin, check);
 				cout << endl;
@@ -429,7 +429,7 @@ int main() {
 				// Update symptoms of patient // 
 				updatePatientWithID(ID, 6, check);
 			}
-			else if (information = 6) {
+			else if (information == 6) {
 				cout << "Enter New COVID-19 Test Result: ";
 				getline(cin, check);
 				cout << endl;
@@ -437,7 +437,7 @@ int main() {
 				// Update test result//
 				updatePatientWithID(ID, 7, check);
 			}
-			else if (information = 7) {
+			else if (information == 7) {
 				cout << "Enter New Status: ";
 				getline(cin, check);
 				cout << endl;
@@ -445,6 +445,20 @@ int main() {
 				// Update status of patient //
 				updatePatientWithID(ID, 8, check);
 			}
+
+			check = to_string(ID);
+			cout << "Updated Patient Details:" << endl;
+			cout << endl;
+			cout << "ID - Name - Date of Birth - Address - High Risk Location Visited - Date Visited - Symptoms - COVID-19  Test Result - Status" << endl;
+			inFile.open(PATIENT_FILEPATH);
+			cout << endl;
+			while (getline(inFile, line)) {
+				if (line.find(check, 0) != string::npos) {
+					cout << line << endl;
+					cout << endl;
+				}
+			}
+			//displays the updated patient file//
 			//return to main menu//
 		}
 
