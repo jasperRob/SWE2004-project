@@ -389,16 +389,10 @@ int main() {
 			cout << endl;
 			//return to main menu//
 		}
-
-		// quit //
-		else if (userinput == 6) {
-			cout << "Thank You For Using Our COVID-19 Database Management System!" << endl;
-			cout << "Goodbye!" << endl;
-		}
-
+	// Quit if input is 6
 	} while (userinput != 6);
 
-
+	cout << "Thank You For Using Our COVID-19 Database Management System!" << endl << "Goodbye!" << endl;
 
 	return 0;
 }
