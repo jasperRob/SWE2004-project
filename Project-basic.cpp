@@ -218,36 +218,35 @@ int main() {
 				cout << "Enter High Risk Location Visited: ";
 				getline(cin, check);
 				oFile << check << ",";
-				cout << endl;
+				if (locationDoesExist(check)) {
+					hasVisitedHighRiskLoc = true;
+				}
 				cout << "Enter Date Visited: ";
 				getline(cin, check);
 				oFile << check << ",";
-				cout << endl;
-				cout << "Does Patients Have Symptoms: ";
+				cout << "Enter Patient Symptoms: ";
 				getline(cin, check);
 				oFile << check << ",";
-				cout << endl;
+				inFile.open(SYMPTOM_FILEPATH);
+				while (getline(inFile, line)) {
+					if (line.find(result, 0) != string::npos) {
+						userSymptoms = "yes";
+					}
+				}
+				inFile.close();
 				cout << "Enter COVID-19 Test Result: ";
 				getline(cin, check);
 				oFile << check << ",";
-				cout << endl;
 				cout << "Enter Status: ";
 				getline(cin, check);
 				oFile << check << "\n";
 				// Close the opened file
 				oFile.close();
-				cout << endl << "Do You Have Any Symptoms? (yes/no): ";
-				getline(cin, userSymptoms);
-				cout << "Which location have you visited recently?: ";
-				getline(cin, check);
-
-				if (locationDoesExist(check)) {
-					hasVisitedHighRiskLoc = true;
-				}
 				if (hasVisitedHighRiskLoc && userSymptoms == "yes") {
 					cout << endl << "Recommended that this patient gets a COVID-19 Test Imediately and Isolate until results come back!" << endl;
 				}
-			} else {
+			}
+			else {
 				cout << endl << "Sorry, a Patient already exists with that ID" << endl;
 			}
 			cout << endl << "Press ENTER to continue to menu...";
