@@ -425,7 +425,7 @@ int main() {
 			cout << endl;
 			result = "positive";
 			inFile.open(PATIENT_FILEPATH);
-			cout << "ID - Name - Date of Birth - Address - Overseas Travel - Symptoms - High Risk Location Visited - COVID-19 Test Result" << endl;
+			cout << "ID - Name - Date of Birth - Address - High Risk Location Visited - Date Visited - Symptoms - COVID-19  Test Result - Status" << endl;
 			cout << endl;
 			while (getline(inFile, line)) {
 				if (line.find(result, 0) != string::npos) {
