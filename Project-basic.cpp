@@ -303,14 +303,14 @@ int main() {
 					cout << endl;
 				}
 			}
-			if (status == "Positive") {
+			if (status == "positive") {
 				// Get new location
 				cout << "Please enter most recent visited location: ";
 				getline(cin, location);
 				// If not exists, add to DB
 				if (!locationDoesExist(location)) {
 					oFile.open(LOCATION_FILEPATH, ios::app);
-					oFile << location << endl;
+					oFile << location << "\n" << endl;
 					oFile.close();
 					cout << location << " added to location database";
 				}
