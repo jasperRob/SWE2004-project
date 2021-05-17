@@ -215,15 +215,27 @@ int main() {
 				cout << "Enter Patient Address: ";
 				getline(cin, check);
 				oFile << check << ",";
-				cout << "Enter Unit Details: ";
+				cout << "Enter High Risk Location Visited: ";
 				getline(cin, check);
 				oFile << check << ",";
-				cout << "Enter Grades: ";
+				cout << endl;
+				cout << "Enter Date Visited: ";
 				getline(cin, check);
-				oFile << check << endl;
+				oFile << check << ",";
+				cout << endl;
+				cout << "Does Patients Have Symptoms: ";
+				getline(cin, check);
+				oFile << check << ",";
+				cout << endl;
+				cout << "Enter COVID-19 Test Result: ";
+				getline(cin, check);
+				oFile << check << ",";
+				cout << endl;
+				cout << "Enter Status: ";
+				getline(cin, check);
+				oFile << check << "\n";
 				// Close the opened file
 				oFile.close();
-
 				cout << endl << "Do You Have Any Symptoms? (yes/no): ";
 				getline(cin, userSymptoms);
 				cout << "Which location have you visited recently?: ";
