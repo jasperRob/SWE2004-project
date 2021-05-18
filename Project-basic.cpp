@@ -9,6 +9,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <numeric>
 using namespace std;
 
 // Define locations of db files with macros
@@ -156,10 +157,19 @@ void updatePatientWithID(int id, int index, string value) {
 	updateColumn(0, to_string(id), index, value, PATIENT_FILEPATH, 9);
 }
 
+/*
+ * Make a string lowercase
+ */
+string stringToLower(string str) {
+	string lower = str;
+	transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
+	return lower;
+}
+
 int main() {
 
 	int userinput, information, ID, existing;
-	string overseas, test, status, userSymptoms, address, name, symptom, location, dateentered, DOB, check, line, result, needcheck, dateVisited;
+	string overseasTravel, test, status, userSymptoms, address, name, symptom, location, dateentered, DOB, check, line, result, needcheck, dateVisited;
 	bool hasVisitedHighRiskLoc;
 	ofstream oFile;
 	ifstream inFile;
@@ -216,8 +226,6 @@ int main() {
 			}
 			// Check if patient already exists
 			if (!patientDoesExist(ID)) {
-				// Opens file in append mode
-				oFile.open(PATIENT_FILEPATH, ios::app);
 				// Takes in all of the patients details and stores in text file
 				cout << "Enter New Patient Name: ";
 				getline(cin, name);
@@ -229,17 +237,35 @@ int main() {
 				getline(cin, location);
 				cout << "Enter Date Visited: ";
 				getline(cin, dateVisited);
+				cout << "Enter last overseas travel status (yes/no): ";
+				getline(cin, overseasTravel);
+				while ((stringToLower(overseasTravel) != "yes") && (stringToLower(overseasTravel) != "no")) {
+					cout << "Invalid input, please try again (yes/no): ";
+					getline(cin, result);
+				}
+				cout << "Enter COVID-19 Test Result (positive/negative): ";
+				getline(cin, result);
+				while ((stringToLower(result) != "positive") && (stringToLower(result) != "negative")) {
+					cout << "Invalid input, please try again (positive/negative): ";
+					getline(cin, result);
+				}
+				cout << "Enter Status (dead/alive): ";
+				getline(cin, status);
+				while ((stringToLower(status) != "dead") && (stringToLower(status) != "alive")) {
+					cout << "Invalid input, please try again (dead/alive): ";
+					getline(cin, result);
+				}
+				// Opens file in append mode
+				oFile.open(PATIENT_FILEPATH, ios::app);
+				// Output new users data to file and close
+				oFile << ID << "," << name << "," << DOB << "," << address << "," << stringToLower(location) << "," 
+					<< dateVisited << "," << stringToLower(overseasTravel) << "," << stringToLower(result) << "," << stringToLower(status) << "\n";
+				oFile.close();
+				// Ask for patient symptoms
 				cout << "Enter Patient Symptoms: ";
 				getline(cin, symptom);
-				cout << "Enter COVID-19 Test Result: ";
-				getline(cin, result);
-				cout << "Enter Status: ";
-				getline(cin, status);
-				// Output new users data to file
-				oFile << ID << "," << name << "," << DOB << "," << address << "," << location << "," << dateVisited << "," << symptom << "," << result << "," << status << "\n";
-				// Close the opened file
-				oFile.close();
-				if (locationDoesExist(location) || isHighRiskSymptom(symptom)) {
+				// Check if they need a test recommended
+				if (locationDoesExist(location) || isHighRiskSymptom(stringToLower(symptom))) {
 					cout << endl << "Recommended that this patient gets a COVID-19 Test Imediately and Isolate until results come back!" << endl;
 				}
 			}
@@ -285,18 +311,18 @@ int main() {
 				}
 			}
 			cout << "Please enter COVID-19 Test Result (positive/negative): ";
-			getline(cin, status);
-			if ((status != "positive") && (status != "negative")) {
-				while ((status != "positive") && (status != "negative")) {
-					cout << "Invalid input, please try again (positive/negative): ";
-					getline(cin, status);
-					cout << endl;
-				}
+			getline(cin, result);
+			result = stringToLower(result);
+			while ((result != "positive") && (result != "negative")) {
+				cout << "Invalid input, please try again (positive/negative): ";
+				getline(cin, result);
+				cout << endl;
 			}
-			if (status == "positive") {
+			if (result == "positive") {
 				// Get new location
 				cout << "Please enter most recent visited location: ";
 				getline(cin, location);
+				location = stringToLower(location);
 				// If not exists, add to DB
 				if (!locationDoesExist(location)) {
 					oFile.open(LOCATION_FILEPATH, ios::app);
@@ -308,31 +334,39 @@ int main() {
 					cout << location << " already exists in location database";
 				}
 			}
-			updatePatientWithID(ID, 7, status);
-			cout << endl << endl << "Press ENTER to continue to menu...";
+			updatePatientWithID(ID, 7, result);
+			// Return to main menu
+			cout << endl << "Press ENTER to continue to menu...";
 			cin.ignore();
 			cout << endl;
 
-			// Display high risk locations
 		}
+		// Display high risk locations
 		else if (userinput == 3) {
 			cout << "The High Risk Locations are:" << endl;
 			cout << endl;
-			cout << endl;
-
+			string title = "Location";
+			int maxChars = 0;
+			// Opens respective file and reads contents
 			inFile.open(LOCATION_FILEPATH);
 			while (getline(inFile, line)) {
-				cout << line << endl;
-				cout << endl;
+				maxChars = max( int(max(title.length(), line.length())), maxChars);
 			}
 			inFile.close();
-			cout << endl;
-			cout << "End of High Risk Location List" << endl;
-			cout << endl;
-			cout << endl;
-			//opens respective file and reads contents//
-
-			//return to main menu//
+			// Print them with a nicely formatted boundary
+			inFile.open(LOCATION_FILEPATH);
+			string horizontalBuffer(maxChars + 4, '-');
+			cout << horizontalBuffer << endl;
+			cout << "| " << title << " |" << endl;
+			cout << horizontalBuffer << endl;
+			while (getline(inFile, line)) {
+				if (!line.empty()) {
+					cout << "| " << line << string(maxChars-line.length(), ' ') << " |" << endl;
+				}
+			}
+			cout << horizontalBuffer << endl;
+			inFile.close();
+			// Return to main menu
 		}
 
 		// update patient details //
@@ -361,10 +395,15 @@ int main() {
 			cout << "Enter '5' for Symptoms:" << endl;
 			cout << "Enter '6' for New COVID Test Result:" << endl;
 			cout << "Enter '7' for New Status" << endl;
+			cout << "Enter '8' to EXIT to menu" << endl;
 			while (true) {
 				try {
 					getline(cin, check);
 					information = stoi(check);
+					if (information < 1 || information > 8) {
+						cout << "Sorry, that input is out of bounds!" << endl;
+						continue;
+					}
 					break;
 				}
 				catch (exception) {
@@ -377,101 +416,102 @@ int main() {
 			if (information == 1) {
 				cout << "Enter New Name: ";
 				getline(cin, check);
-				cout << endl;
-
 				// Update name of patient
 				updatePatientWithID(ID, 1, check);
 			}
 			else if (information == 2) {
 				cout << "Enter New Date of Birth (dd/mm/yyyy): ";
 				getline(cin, check);
-				cout << endl;
-
 				// Update DOB of patient
 				updatePatientWithID(ID, 2, check);
 			}
 			else if (information == 3) {
 				cout << "Enter New Address: ";
 				getline(cin, check);
-				cout << endl;
-
 				// Update address of patient
 				updatePatientWithID(ID, 3, check);
 			}
 			else if (information == 4) {
 				cout << "Enter New High Risk Location Visited: ";
 				getline(cin, check);
-				cout << endl;
-
 				updatePatientWithID(ID, 4, check);
 				cout << "Enter Date Visited: ";
 				getline(cin, check);
-				cout << endl;
-
-				// Update location and date visited //
+				// Update location and date visited
 				updatePatientWithID(ID, 5, check);
 			}
 			else if (information == 5) {
 				cout << "Enter New Symptom: ";
 				getline(cin, check);
-				cout << endl;
-
-				// Update symptoms of patient // 
+				// Update symptoms of patient
 				updatePatientWithID(ID, 6, check);
 			}
 			else if (information == 6) {
 				cout << "Enter New COVID-19 Test Result: ";
 				getline(cin, check);
-				cout << endl;
-
-				// Update test result//
+				// Update test result
 				updatePatientWithID(ID, 7, check);
 			}
 			else if (information == 7) {
 				cout << "Enter New Status: ";
 				getline(cin, check);
-				cout << endl;
-
-				// Update status of patient //
+				// Update status of patient
 				updatePatientWithID(ID, 8, check);
 			}
 
-			check = to_string(ID);
-			cout << "Updated Patient Details:" << endl;
+			cout << endl << "Press ENTER to continue to menu...";
+			cin.ignore();
 			cout << endl;
-			cout << "ID - Name - Date of Birth - Address - High Risk Location Visited - Date Visited - Symptoms - COVID-19  Test Result - Status" << endl;
-			inFile.open(PATIENT_FILEPATH);
-			cout << endl;
-			while (getline(inFile, line)) {
-				if (line.find(check, 0) != string::npos) {
-					cout << line << endl;
-					cout << endl;
-				}
-			}
-			//displays the updated patient file//
-			//return to main menu//
+			// Return to main menu
 		}
 
 		// display covid positive patient details //
 		else if (userinput == 5) {
 			cout << "Covid Positive Patient Details are:" << endl;
 			cout << endl;
-			cout << endl;
-			result = "positive";
+			string titles[9] = {"ID", "Name", "Date of Birth", "Address", "High Risk Location Visited", "Date Visited" ,"Last Overseas travel","COVID-19 Test Result", "Status"};
+			int maxChars[9] = { 0 };
+			// Opens respective file and reads contents
 			inFile.open(PATIENT_FILEPATH);
-			cout << "ID - Name - Date of Birth - Address - High Risk Location Visited - Date Visited - Symptoms - COVID-19  Test Result - Status" << endl;
-			cout << endl;
 			while (getline(inFile, line)) {
-				if (line.find(result, 0) != string::npos) {
-					cout << line << endl;
-					cout << endl;
+				if (line.find("positive", 0) != string::npos) {
+					stringstream ss(line);
+					for (int i = 0; i < 9; i++) {
+						string item;
+						getline(ss, item, ',');
+						// Get the maximum column width for each column
+						maxChars[i] = max( int(max(titles[i].length(), item.length())), maxChars[i]);
+					}
 				}
 			}
 			inFile.close();
-			//searches for patient data and prints the data//
+			int bufferWidth = accumulate(begin(maxChars), end(maxChars), 0) + 28;
+			// Print the column titles
+			string horizontalBuffer(bufferWidth, '-');
+			cout << horizontalBuffer << endl;
+			for (int i = 0; i < 9; i++) {
+				cout << "| " << titles[i] << string(maxChars[i]-titles[i].length(), ' ') << " ";
+			}
+			cout << "|" << endl;
+			cout << horizontalBuffer << endl;
+			// Print them with a nicely formatted boundary
+			inFile.open(PATIENT_FILEPATH);
+			while (getline(inFile, line)) {
+				if (line.find("positive", 0) != string::npos) {
+					if (!line.empty()) {
+						stringstream ss(line);
+						for (int i = 0; i < 9; i++) {
+							string item;
+							getline(ss, item, ',');
+							cout << "| " << item << string(maxChars[i]-item.length(), ' ') << " ";
+						}
+						cout << "|" << endl;
+					}
+				}
+			}
+			cout << horizontalBuffer << endl;
+			inFile.close();
 			cout << endl;
-			cout << endl;
-			//return to main menu//
 		}
 		// Quit if input is 6
 	} while (userinput != 6);
