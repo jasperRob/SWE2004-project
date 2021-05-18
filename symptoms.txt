@@ -1,3 +1,7 @@
-,Fever,
-Cough,,
-
+fever,,
+dry cough,,
+headache,,
+,sore throat,
+aches and pains,,
+,,breathing dificulty
+,,tight chest
