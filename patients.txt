@@ -1,4 +1,4 @@
-2,seargent pepper,19/01/1984,25 another even longer rd\, somewhere,hospital,21/4/2021,yes,positive,alive
+2,seargent pepper,19/01/1984,25 another even longer rd, somewhere,hospital,21/4/2021,yes,positive,alive
 3,roger swanson,9/05/1923,32 Roady road Bakerstown,hospital,21/4/2021,no,negative,dead
-4,james parker,17/2/1965,143 band street\, othertown,hospital,2/2/2021,no,negative,alive
-5,bob jackson,03/08/1995,34 green st\, smallville,hospital,03/04/2021,no,positive,alive
+4,james parker,17/2/1965,143 band street, othertown,hospital,2/2/2021,no,negative,alive
+5,bob jackson,03/08/1995,34 green st, smallville,hospital,03/04/2021,no,positive,alive
