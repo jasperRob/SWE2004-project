@@ -166,6 +166,20 @@ string stringToLower(string str) {
 	return lower;
 }
 
+/*
+ * Helper funtion for escaping commas
+ */
+string escaped(string str) {
+	string ret = "";
+	for (int i = 0; i < str.size(); i++) {
+		if (str[i] == ',') {
+			ret += '\\';
+		}
+		ret += str[i];
+	}
+	return ret;
+}
+
 int main() {
 
 	int userinput, information, ID, existing;
@@ -258,8 +272,8 @@ int main() {
 				// Opens file in append mode
 				oFile.open(PATIENT_FILEPATH, ios::app);
 				// Output new users data to file and close
-				oFile << ID << "," << name << "," << DOB << "," << address << "," << stringToLower(location) << "," 
-					<< dateVisited << "," << stringToLower(overseasTravel) << "," << stringToLower(result) << "," << stringToLower(status) << "\n";
+				oFile << ID << "," << escaped(name) << "," << escaped(DOB) << "," << escaped(address) << "," << escaped(stringToLower(location)) << "," 
+					<< escaped(dateVisited) << "," << stringToLower(overseasTravel) << "," << stringToLower(result) << "," << stringToLower(status) << "\n";
 				oFile.close();
 				// Ask for patient symptoms
 				cout << "Enter Patient Symptoms: ";
@@ -322,7 +336,7 @@ int main() {
 				// Get new location
 				cout << "Please enter most recent visited location: ";
 				getline(cin, location);
-				location = stringToLower(location);
+				location = escaped(stringToLower(location));
 				// If not exists, add to DB
 				if (!locationDoesExist(location)) {
 					oFile.open(LOCATION_FILEPATH, ios::app);
@@ -391,11 +405,10 @@ int main() {
 			cout << "Enter '1' for Name:" << endl;
 			cout << "Enter '2' for Date of Birth:" << endl;
 			cout << "Enter '3' for Address:" << endl;
-			cout << "Enter '4' for New High Risk Location Visited:" << endl;
-			cout << "Enter '5' for Symptoms:" << endl;
-			cout << "Enter '6' for New COVID Test Result:" << endl;
-			cout << "Enter '7' for New Status" << endl;
-			cout << "Enter '8' to EXIT to menu" << endl;
+			cout << "Enter '4' for New High Risk Location Visited and date visited:" << endl;
+			cout << "Enter '5' for Last Overseas Travel" << endl;
+			cout << "Enter '6' for New Status" << endl;
+			cout << "Enter '7' to EXIT to menu" << endl;
 			while (true) {
 				try {
 					getline(cin, check);
@@ -413,50 +426,56 @@ int main() {
 			}
 			cout << endl;
 			//find patient data//
-			if (information == 1) {
-				cout << "Enter New Name: ";
-				getline(cin, check);
-				// Update name of patient
-				updatePatientWithID(ID, 1, check);
-			}
-			else if (information == 2) {
-				cout << "Enter New Date of Birth (dd/mm/yyyy): ";
-				getline(cin, check);
-				// Update DOB of patient
-				updatePatientWithID(ID, 2, check);
-			}
-			else if (information == 3) {
-				cout << "Enter New Address: ";
-				getline(cin, check);
-				// Update address of patient
-				updatePatientWithID(ID, 3, check);
-			}
-			else if (information == 4) {
-				cout << "Enter New High Risk Location Visited: ";
-				getline(cin, check);
-				updatePatientWithID(ID, 4, check);
-				cout << "Enter Date Visited: ";
-				getline(cin, check);
-				// Update location and date visited
-				updatePatientWithID(ID, 5, check);
-			}
-			else if (information == 5) {
-				cout << "Enter New Symptom: ";
-				getline(cin, check);
-				// Update symptoms of patient
-				updatePatientWithID(ID, 6, check);
-			}
-			else if (information == 6) {
-				cout << "Enter New COVID-19 Test Result: ";
-				getline(cin, check);
-				// Update test result
-				updatePatientWithID(ID, 7, check);
-			}
-			else if (information == 7) {
-				cout << "Enter New Status: ";
-				getline(cin, check);
-				// Update status of patient
-				updatePatientWithID(ID, 8, check);
+			switch (information)
+			{
+				case 1:
+					cout << "Enter New Name: ";
+					getline(cin, name);
+					// Update name of patient
+					updatePatientWithID(ID, 1, escaped(name));
+					break;
+				case 2:
+					cout << "Enter New Date of Birth (dd/mm/yyyy): ";
+					getline(cin, DOB);
+					// Update DOB of patient
+					updatePatientWithID(ID, 2, escaped(DOB));
+					break;
+				case 3:
+					cout << "Enter New Address: ";
+					getline(cin, address);
+					// Update address of patient
+					updatePatientWithID(ID, 3, escaped(address));
+					break;
+				case 4:
+					cout << "Enter New High Risk Location Visited: ";
+					getline(cin, location);
+					updatePatientWithID(ID, 4, location);
+					cout << "Enter Date Visited: ";
+					getline(cin, dateVisited);
+					// Update location and date visited
+					updatePatientWithID(ID, 5, escaped(dateVisited));
+					break;
+				case 5:
+					cout << "Enter last overseas travel status (yes/no): ";
+					getline(cin, overseasTravel);
+					while ((stringToLower(overseasTravel) != "yes") && (stringToLower(overseasTravel) != "no")) {
+						cout << "Invalid input, please try again (yes/no): ";
+						getline(cin, result);
+					}
+					updatePatientWithID(ID, 6, escaped(overseasTravel));
+					break;
+				case 6:
+					cout << "Enter Status (dead/alive): ";
+					getline(cin, status);
+					while ((stringToLower(status) != "dead") && (stringToLower(status) != "alive")) {
+						cout << "Invalid input, please try again (dead/alive): ";
+						getline(cin, result);
+					}
+					updatePatientWithID(ID, 7, escaped(overseasTravel));
+					break;
+				default:
+					break;
+
 			}
 
 			cout << endl << "Press ENTER to continue to menu...";
@@ -479,6 +498,12 @@ int main() {
 					for (int i = 0; i < 9; i++) {
 						string item;
 						getline(ss, item, ',');
+						while (item.back() == '\\') {
+							string append;
+							getline(ss, append, ',');
+							item = item.substr(0, item.length()-1);
+							item = item + "," + append;
+						}
 						// Get the maximum column width for each column
 						maxChars[i] = max( int(max(titles[i].length(), item.length())), maxChars[i]);
 					}
@@ -503,6 +528,12 @@ int main() {
 						for (int i = 0; i < 9; i++) {
 							string item;
 							getline(ss, item, ',');
+							while (item.back() == '\\') {
+								string append;
+								getline(ss, append, ',');
+								item = item.substr(0, item.length()-1);
+								item = item + "," + append;
+							}
 							cout << "| " << item << string(maxChars[i]-item.length(), ' ') << " ";
 						}
 						cout << "|" << endl;

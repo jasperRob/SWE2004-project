@@ -2,5 +2,5 @@
 3,roger swanson,9/05/1923,32 Roady road Bakerstown,hospital,21/4/2021,no,negative,dead
 4,james parker,17/2/1965,143 band street othertown,hospital,2/2/2021,no,negative,alive
 5,Bob Smanson,33/04/6969,34 green st smallville,hospital,03/04/2021,no,positive,alive
-66,Bob Ralhpson,22/08/1996,65 real drive,hospital,22/03/2021,yes,positive,alive
+66,Tom Ralphson,22/08/1996,65 real drive,park,12/08/2019,yes,positive,alive
 69,John Doe,31/09/2000,22 some road,hospital,12/03/2021,no,negative,alive
