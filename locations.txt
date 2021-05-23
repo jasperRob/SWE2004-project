@@ -1,3 +1,6 @@
 hospital
 airport
 park
+beach
+home
+
