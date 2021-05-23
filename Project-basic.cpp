@@ -166,9 +166,11 @@ void updatePatientWithID(int id, int index, string value) {
  * Make a string lowercase
  */
 string stringToLower(string str) {
-	string lower = str;
-	transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-	return lower;
+	string ret = "";
+	for (int i = 0; i < str.size(); i++) {
+		ret += tolower(str[i]);
+	}
+	return ret;
 }
 
 /*
