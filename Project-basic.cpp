@@ -1,8 +1,13 @@
-// SWE20004 Technical Software Development //
-// COVID Project //
-// Jasper Robison    #102989198 //
-// Joel Murphy       #103073746 //
-// Samuel Nothnagel  #100601319 //
+/**
+ * @file Project-basic.cpp
+ *
+ * SWE20004 Technical Software Development
+ * COVID Project
+ *
+ * @author Jasper Robison    #102989198
+ * @author Joel Murphy       #103073746
+ * @author Samuel Nothnagel  #100601319
+ */
 
 // #include statement list to include required C++ library functions //
 #include <iostream>
