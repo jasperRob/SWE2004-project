@@ -533,6 +533,7 @@ int main() {
 			while (getline(inFile, line)) {
 				// Only print if they are covid positive patients
 				if (line.find("positive", 0) != string::npos) {
+					// searches the file for the matching input and takes the position of the matching input //
 					stringstream ss(line);
 					for (int i = 0; i < 9; i++) {
 						string item;
